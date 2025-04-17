@@ -21,12 +21,7 @@ if ($user.username === $kv.get('HighestGoalTipperName')) {
     $kv.set('HighestGoalTipperName', $user.username);
   }
 }
-// added to test tip bar
-startIntroCallback();
-$overlay.emit("goalUpdate", {
-  current: $kv.get('goalCurrent'),
-  value: $kv.get('goalValue')
-});
 
+startIntroCallback();
 goalPrizeMsg();
 
