@@ -211,7 +211,7 @@ function sendDaddyNotice(){
 function sendDaddyNoticeTo(username){
   var record = $kv.get('HighestGoalTipperAmount') + 1;
   let message = $kv.get('HighestGoalTipperName') + ' is ' + $kv.get('userNameIs') + '\'s Daddy with ' + $kv.get('HighestGoalTipperAmount') + ' tokens tipped.' + end_line
-  + '\n Tip at least ' + record + ' tokens to become Erika\'s new Daddy. ' + end_line
+  + '\n Tip at least ' + record + ' tokens to become the NEW Daddy. ' + end_line
   if ($settings.prize_enable === true) {
     message += '\n Top Daddy takes the prize when the goal is reached!😏 Today’s reward is: ' + $settings.goal_Prize
   }
