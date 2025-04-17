@@ -1,0 +1,98 @@
+// These settings are defined in the Chaturbate Dev Portal under the "Settings" tab.
+// They are accessible via the `$settings` object within your app code.
+// You will need to add / define each setting one by one using the dev portal.
+
+[
+  {
+    "type": "number",
+    "name": "goal_Value",
+    "label": "Tip Goal Amount",
+    "default": 3000,
+    "min": 1,
+    "max": 99999
+  },
+  {
+    "type": "number",
+    "name": "init_Tip_Value",
+    "label": "Minimum Tip to Become Daddy",
+    "default": 100,
+    "min": 1,
+    "max": 10000
+  },
+  {
+    "type": "text",
+    "name": "goal_Prize",
+    "label": "Prize Description",
+    "default": "VIP Snapchat access 👀"
+  },
+  {
+    "type": "checkbox",
+    "name": "prize_enable",
+    "label": "Enable Prize Messages",
+    "default": true
+  },
+  {
+    "type": "color",
+    "name": "background_color",
+    "label": "Text Color (Prize Notices)",
+    "default": "#ffffff"
+  },
+  {
+    "type": "color",
+    "name": "text_color",
+    "label": "Background Color (Prize Notices)",
+    "default": "#000000"
+  },
+  {
+    "type": "color",
+    "name": "session_leader_text",
+    "label": "Session Leaderboard Text Color",
+    "default": "#FFD700"
+  },
+  {
+    "type": "color",
+    "name": "session_leader_bg",
+    "label": "Session Leaderboard Background Color",
+    "default": "#222222"
+  },
+  {
+    "type": "checkbox",
+    "name": "use_default_username",
+    "label": "Use Broadcaster's Username",
+    "default": true
+  },
+  {
+    "type": "text",
+    "name": "alt_username",
+    "label": "Alternate Username (if not using default)",
+    "default": "Erika"
+  },
+  {
+    "type": "number",
+    "name": "time_step",
+    "label": "Time Between Countdown Messages (seconds)",
+    "default": 60,
+    "min": 10,
+    "max": 600
+  },
+  {
+    "type": "number",
+    "name": "time_session_leader",
+    "label": "Session Leader Announce Interval (minutes)",
+    "default": 5,
+    "min": 1,
+    "max": 60
+  },
+  {
+    "type": "text",
+    "name": "daddy_icon",
+    "label": "Daddy Icon (Emoji/Prefix)",
+    "default": "👑"
+  },
+  {
+    "type": "color",
+    "name": "daddy_background",
+    "label": "Daddy Chat Highlight Color",
+    "default": "#800080"
+  }
+]
