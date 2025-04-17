@@ -102,4 +102,4 @@ MIT License — © 2025 KinkZilla
 ## 💬 Support & Collaboration
 
 Built with love, sass, and Nova — My AI dev sidekick.  
-Want to collab, remix, or feature this? [Let’s talk](https://chaturbate.com/kink_zilla). 😉
+Want to collab, remix, or feature this? [Let’s talk](realcjbaker@gmail.com). 😉
