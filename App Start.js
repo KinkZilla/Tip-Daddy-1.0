@@ -1,4 +1,4 @@
-// Calls the "onStart" function on app start.
+// Runs on app start.
 onStart();
 
 
