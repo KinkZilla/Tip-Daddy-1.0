@@ -1,4 +1,8 @@
-if ($user.username == $kv.get('HighestGoalTipperName')){
-  $message.setBody($settings.daddy_icon + ' ' +  $message.body)
-  $message.setBgColor($settings.daddy_background)
+try {
+  if ($user.username == $kv.get('HighestGoalTipperName')) {
+    $message.setBody($settings.daddy_icon + ' ' +  $message.body);
+    $message.setBgColor($settings.daddy_background);
+  }
+} catch (e) {
+  // Do nothing if the key doesn't exist — silently skip transform
 }
