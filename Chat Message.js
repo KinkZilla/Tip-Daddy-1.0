@@ -75,5 +75,3 @@ if ($message.body === '/clearalltime' && ($user.isMod || $user.username === $roo
   $room.sendNotice('🧹 All-Time leaderboard has been cleared.', { toUsername: $user.username });
  
 }
-
-
