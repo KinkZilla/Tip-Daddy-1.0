@@ -64,6 +64,11 @@ MIT License — © 2025 KinkZilla
 
 ---
 
+## Changelog
+
+View the full changelog [here](./CHANGELOG.md).
+
+
 ## 💬 Support & Collaboration
 
 Built with love, sass, and Nova — My AI dev sidekick.  
