@@ -49,7 +49,6 @@ function sendStyledNotice(message, username = null) {
   });
 }
 
-
 function showLeaderboard(scope, targetUser) {
   let topList = [];
   try {
@@ -58,19 +57,21 @@ function showLeaderboard(scope, targetUser) {
     topList = [];
   }
 
-  let message = `* ${scope === 'AllTime' ? 'All-Time' : 'This Session'} *\n`;
-  message += `----- Top 5 ------\n`;
+  const lines = [];
+  lines.push(`* ${scope === 'AllTime' ? 'All-Time' : 'This Session'} *`);
+  lines.push(`----- Top 5 ------`);
 
   for (let i = 0; i < 5; i++) {
     const name = topList[i];
     if (name) {
       const total = Number($kv.get(`${scope}_TopTipper_${name}`) || 0);
-      message += `${name}: ${total} tokens\n`;
+      lines.push(`${name}: ${total} tokens`);
     } else {
-      message += `None — 0 tokens\n`;
+      lines.push(`None — 0 tokens`);
     }
   }
 
+  const message = lines.join('\n');
   $room.sendNotice(message, { toUsername: targetUser });
 }
 
