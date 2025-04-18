@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tip Daddy is a live tipping leaderboard app for Chaturbate. Reward your top tippers, track goals, and crown your Daddy.">
+  <title>Tip Daddy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header img {
+      width: 200px;
+      border-radius: 24px;
+      box-shadow: 0 0 20px #facc15aa;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      color: #facc15;
+      text-shadow: 0 0 8px #facc15cc;
+    }
+    p.description {
+      max-width: 700px;
+      font-size: 1.2rem;
+      color: #aaa;
+    }
+    section.features {
+      max-width: 800px;
+      margin-top: 2rem;
+      display: grid;
+      gap: 1rem;
+    }
+    .feature {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+    }
+    .feature h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1.4rem;
+      color: #fbbf24;
+    }
+    .feature p {
+      margin: 0;
+      color: #ccc;
+    }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    a.button {
+      display: inline-block;
+      margin-top: 2rem;
+      background: #facc15;
+      color: #000;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    a.button:hover {
+      background: #eab308;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="tipdaddy.png" alt="Tip Daddy Logo">
+    <h1>Tip Daddy</h1>
+    <p class="description">Tip Daddy is a custom Chaturbate app that lets your viewers compete to be your top tipper. It tracks session and all-time leaders, rewards them with prizes, and crowns your Daddy live in chat. </p>
+    <a class="button" href="https://github.com/YOUR_USERNAME/TIPDADDY_REPO" target="_blank">View on GitHub</a>
+  </header>
+
+  <section class="features">
+    <div class="feature">
+      <h2>👑 Real-Time Leaderboards</h2>
+      <p>Tracks both session and all-time top tippers, with smart formatting and accurate token tracking.</p>
+    </div>
+    <div class="feature">
+      <h2>🎯 Goal Progress System</h2>
+      <p>Set a custom token goal and let viewers compete to hit it — when they do, the top Daddy wins a prize.</p>
+    </div>
+    <div class="feature">
+      <h2>💬 Smart Chat Integration</h2>
+      <p>Displays special chat styling and messages for the top Daddy, including icons and background color.</p>
+    </div>
+    <div class="feature">
+      <h2>🧠 Crash-Proof KV Logic</h2>
+      <p>Handles reconnects, missing keys, and race conditions gracefully so your app stays stable.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>Made with ❤️ by Kink_Zilla — Powered by Chaturbate & GitHub Pages</p>
+  </footer>
+</body>
+</html>
