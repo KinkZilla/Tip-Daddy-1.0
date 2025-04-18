@@ -37,7 +37,6 @@ function onStart() {
   startIntroCallback();
 
 
-
 }
 
 
@@ -95,42 +94,106 @@ let message = '👑 Top 5 Leaders for this Session 👑'
 }
 
 
-function init_Goal_Begin(){
-  $kv.set('roomSubject', $settings._Goal)
-  $kv.set('goalValue', $settings.goal_Value)
-  $kv.set('goalCurrent', 0)
-  $kv.set('HighestGoalTipperAmount', 0)
-  $kv.set('HighestGoalTipperName', 'None')
-  $kv.set('currentDaddyIs', 'None')
-  $kv.set('TopTippers', 'None')
+function init_Goal_Begin() {
+  let alreadyInit = false;
+
+  try {
+    alreadyInit = $kv.get('goalInitialized') === 'true';
+  } catch (e) {
+    alreadyInit = false;
+  }
+
+  if (!alreadyInit) {
+    $kv.set('roomSubject', $settings._Goal);
+    $kv.set('goalValue', $settings.goal_Value);
+    $kv.set('goalCurrent', 0);
+    $kv.set('HighestGoalTipperAmount', 0);
+    $kv.set('HighestGoalTipperName', 'None');
+    $kv.set('currentDaddyIs', 'None');
+    $kv.set('TopTippers', 'None');
+    $kv.set('goalInitialized', 'true'); // must be a string, not boolean!
+  }
+
   updateSubject();
   $callback.create('SessionLeaderAnnounce', 60 * $settings.time_session_leader, true);
-
 }
 
-function updateSubject(){
-  $room.setSubject( $kv.get('roomSubject' ) + ' @ Goal: ' + $kv.get('goalCurrent') + ' of ' + $kv.get('goalValue') + ' tokens.')
 
+function updateSubject() {
+  let current = 0;
+  let value = 0;
+  let subject = 'Goal';
+
+  try {
+    current = Number($kv.get('goalCurrent') || 0);
+  } catch (e) {
+    current = 0;
+  }
+
+  try {
+    value = Number($kv.get('goalValue') || 0);
+  } catch (e) {
+    value = 0;
+  }
+
+  try {
+    subject = $kv.get('roomSubject') || 'Goal';
+  } catch (e) {
+    subject = 'Goal';
+  }
+
+  $room.setSubject(`${subject} @ Goal: ${current} of ${value} tokens.`);
 }
+
 
 function setDaddyCurrent() {
   $kv.set('currentDaddyIs', $kv.get('HighestGoalTipperName') || 'None')
 }
 
 function startIntroCallback() {
- let amount = Number($kv.get('HighestGoalTipperAmount') || 0);
-  var Tips = ($settings.init_Tip_Value - 1)
+  let amount = 0;
+  let current = 0;
+  let goal = 0;
+
+  try {
+    amount = Number($kv.get('HighestGoalTipperAmount') || 0);
+  } catch (e) {
+    amount = 0;
+  }
+
+  try {
+    current = Number($kv.get('goalCurrent') || 0);
+  } catch (e) {
+    current = 0;
+  }
+
+  try {
+    goal = Number($settings.goal_Value || 0);
+  } catch (e) {
+    goal = 0;
+  }
+
+  const Tips = ($settings.init_Tip_Value - 1);
+
+  if (current >= goal) {
+    // 🛑 Goal already reached, do NOT run 'Main' again
+     // ✅ Goal already reached — do NOT run 'Main' again, quietly set Daddy, skip repeat announcements
+     
+  setDaddyCurrent();
+    return;
+  }
 
   if (amount > Tips) {
-    $callback.cancel('Intro')
+    $callback.cancel('Intro');
     setDaddyCurrent();
     sendDaddyNoticeTo();
     $callback.create('Main', 60 * $settings.time_step, true);
-
   } else {
     $callback.create('Intro', 60 * $settings.time_step, true);
   }
 }
+
+
 
 
 
@@ -201,7 +264,18 @@ function updateTopTippers(type, username, tokens) {
 
 
 
+function firePrizeNotice() {
+  const daddy = $kv.get('HighestGoalTipperName') || 'None';
+  const tokens = $kv.get('HighestGoalTipperAmount') || 0;
+  const prize = $settings.goal_Prize || 'a mystery treat 👀';
+  const msg = `🎉 Congratulations ${daddy}! You’ve won the goal prize as the Top Daddy with ${tokens} tokens tipped!\n💝 Prize: ✨${prize}✨`;
 
+    $room.sendNotice(msg, {
+      color: '#ffffff',
+      bgColor: '#000000'
+    });
+
+}
 
 function sendDaddyNotice(){
   sendDaddyNoticeTo()
@@ -229,6 +303,8 @@ function goalPrizeMsg() {
     const prize = $settings.goal_Prize || 'a mystery treat 👀';
 
     if (topDaddy && topDaddy !== 'None') {
+      
+      $callback.create('PrizeNotice', 2, false);
       const msg = `🎉 You crushed it, ${topDaddy}!\nYou've earned the prize for completing the goal!\n\n💝 Your prize is: ${prize}`;
 
       $room.sendNotice(msg, {
