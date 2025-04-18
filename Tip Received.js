@@ -1,20 +1,35 @@
-$kv.incr('goalCurrent', $tip.tokens)
-// ✅ check if the goal was hit *before* updating the subject
-// Pass the tip so it evaluates the new total correctly
-
+$kv.incr('goalCurrent', $tip.tokens);
 updateSubject();
-$room.reloadPanel()
+$room.reloadPanel();
 updateTopTippers('Session', $user.username, $tip.tokens);  // gets wiped
 updateTopTippers('AllTime', $user.username, $tip.tokens);  // lives forever
 
-if ($user.username === $kv.get('HighestGoalTipperName')) {
+let topName = 'None';
+let currentHigh = 0;
+
+try {
+  topName = $kv.get('HighestGoalTipperName') || 'None';
+} catch (e) {
+  topName = 'None';
+}
+
+try {
+  currentHigh = Number($kv.get('HighestGoalTipperAmount') || 0);
+} catch (e) {
+  currentHigh = 0;
+}
+
+if ($user.username === topName) {
   // They’re already the top tipper — just add to their total
-  $kv.incr('HighestGoalTipperAmount', $tip.tokens);
+  try {
+    $kv.incr('HighestGoalTipperAmount', $tip.tokens);
+  } catch (e) {
+    $kv.set('HighestGoalTipperAmount', $tip.tokens); // fallback safety
+  }
 
 } else {
   // They’re not the top — check if this tip puts them in the lead
-  const currentHigh = Number($kv.get('HighestGoalTipperAmount') || 0);
-  const newTotal = $tip.tokens; // Assuming you're not tracking their full total
+  const newTotal = $tip.tokens; // If you ever track running total per-user, adjust here
 
   if (newTotal > currentHigh) {
     $kv.set('HighestGoalTipperAmount', newTotal);
@@ -22,6 +37,7 @@ if ($user.username === $kv.get('HighestGoalTipperName')) {
   }
 }
 
-startIntroCallback();
 goalPrizeMsg();
 
+// added to test tip bar
+startIntroCallback();
