@@ -73,3 +73,8 @@ View the full changelog [here](./CHANGELOG.md).
 
 Built with love, sass, and Nova — My AI dev sidekick.  
 Want to collab, remix, or feature this? [Let’s talk](https://chaturbate.com/kink_zilla). 😉
+
+
+## Keywords (for search)
+
+Chaturbate tip leaderboard, token goal tracker, live tip ranking, CB app goal system, Chaturbate overlay, top tipper display, CB token prize game, Chaturbate goal app, engagement tipping app, Tip Daddy 1.0, 
