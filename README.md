@@ -66,8 +66,8 @@ MIT License — © 2025 KinkZilla
 
 ## Changelog
 
-### Tip Daddy v1.4 Update
-- Shared Code was completely rebuilt and replaced in version 1.4
+### Tip Daddy v1.0.4 Update
+- Shared Code was completely rebuilt and replaced in version 1.0.4
 - Legacy logic (setDaddyCurrent, currentDaddyIs, etc.) has been deprecated
 
 
