@@ -1,100 +1,80 @@
+
 /**
- * App: WhosYourDaddy- Top Tipper
- * Version: 1.0.1
- * Author: Kink_Zilla 
- * Date: 2025-04-11
- * Credit: This app is an upgrade of Erikas Daddy Tipper by gates_
+ * Tip Daddy
+ * Version: 1.0.4
+ * Author: kink_zilla
+ *
+ * Comments:
+ * If you branch Tip Daddy, you should reference the original GitHub.
+ * Please dont publish your versions like they're official—
+ * label your remix like "Tip Daddy - Remixed" or something cool 👌👍
  */
 
 
 
+// 🧠 Tip Daddy Constants & Runtime Lock-In
 
-const end_line = '\u00A0';
+const APP_NAME = "Tip Daddy 1.0";
+const APP_VERSION = "1.0.4";
 
-function announceAppStarted(){
-  $room.sendNotice($app.name + ' has started. You\'re running Version 1.0.1');
-}
-
-function announceAppStopped(){
-  $room.sendNotice($app.name + ' has stopped.');
-}
-
-function setUsernameDefault(){
-if ($settings.use_default_username === false){
-  $kv.set('userNameIs', $settings.alt_username);
-} else {
-  $kv.set('userNameIs', $room.owner);
-}
-
-}
-
-function onStart() {
- 
-  announceAppStarted();
-  setUsernameDefault();
-  $room.reloadPanel()
-  init_Goal_Begin();
-  startIntroCallback();
-
-
-}
+$app.name = APP_NAME;
+$app.version = APP_VERSION;
 
 
 
-function sendStyledNotice(message, username = null) {
-  $room.sendNotice(message, {
-    toUsername: username,
-    color: $settings.background_color,
-    bgColor: $settings.text_color
-  });
-}
-
-function showLeaderboard(scope, targetUser) {
-  let topList = [];
-  try {
-    topList = JSON.parse($kv.get(`${scope}_TopTippers`)) || [];
-  } catch (e) {
-    topList = [];
-  }
-
-  const lines = [];
-  lines.push(`* ${scope === 'AllTime' ? 'All-Time' : 'This Session'} *`);
-  lines.push(`----- Top 5 ------`);
-
-  for (let i = 0; i < 5; i++) {
-    const name = topList[i];
-    if (name) {
-      const total = Number($kv.get(`${scope}_TopTipper_${name}`) || 0);
-      lines.push(`${name}: ${total} tokens`);
-    } else {
-      lines.push(`None — 0 tokens`);
-    }
-  }
-
-  const message = lines.join('\n');
-  $room.sendNotice(message, { toUsername: targetUser });
-}
-
-function cancelAllCallbacks() {
-    $callback.cancel('Intro')
-    $callback.cancel('Main')
-    $callback.cancel('SessionLeaderAnnounce')
-}
-
-function tipToStartCallback(username){
-  let message = 'You must tip at least ' + $settings.init_Tip_Value + ' tokens to become ' + $kv.get('userNameIs') + '\'s Daddy.'
-  sendStyledNotice(message, username);
-}
-
-function broadcastSessionLeaderboard(username) {
-let message = '👑 Top 5 Leaders for this Session 👑'
-
- $room.sendNotice(message, {toUsername : username, color : $settings.session_leader_text, bgColor : $settings.session_leader_bg})
-
-  showLeaderboard('Session');
-}
+// ----------------------------------------
+// The constants BELOW are evaluated ONCE when the app is started or updated.
+//
+// This happens when the model clicks:
+//   ✅ "Start App"
+//   ✅ "Restart App"
+//   ✅ "Update App" (after editing settings)
+//
+// These constants use values from $settings and are locked in for the full session.
+// If a model changes a setting mid-session, it will NOT affect these until the app is restarted.
+//
+// For dynamic values that can change mid-session, use $kv.get(...) or a helper function instead.
+//
+// Example:
+//   const GOAL_LABEL = $settings.goal;         // ✅ Locked at start
+//   const DEFAULT_USERNAME_MODE = $settings.use_default_username; // ✅ Locked at start
+//
+//   function getLivePrize() {                  // ✅ Always fresh / NOT locked at start
+//     return $kv.get('goalPrize') || $settings.goal_Prize;
+//   }
+//  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓  USER DEFINED CONSTANTS   ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 
+const DEFAULT_NAME = $settings.use_default_username; 
+const USER_NAME = $settings.alt_username;  // Name you want to replace it with.
+const GOAL_LABEL = $settings.goal; // What are we tipping for? Sexy Dance?
+const GOAL_AMOUNT = $settings.goal_Value; // How much is the goal? In tokens.
+const PRIZE_ON = $settings.prize_enable;
+const PRIZE_LABEL = $settings.goal_Prize;
+const DADDY_PRICE = $settings.init_Tip_Value; 
+const DADDY_EMOJI = $settings.daddy_icon;
+const DADDY_COLOR = $settings.daddy_background;
+const TIME_VAR = $settings.time_value; 
+const MSG_TXT = $settings.text_color; 
+const MSG_BG = $settings.background_color; 
+const LEADER_BG = $settings.session_leader_bg; 
+const LEADER_TXT = $settings.session_leader_text; 
+const SESSION_TIME_VAR = $settings.time_session_leader;
+
+//-------------------------------------------------------------------------------------- 
+//                           ↓ INITIALIZATION FUNCTIONS
+//--------------------------------------------------------------------------------------
+//
+//         🧠 INIT GOAL: Safe one-time goal setup logic
+//         Initialize the settings, but only if they have not been set before.
+//              ↓ Protects against hiccups.
+// 
+// -------------------------------------------
+// This function runs once when the app starts to initialize all goal-related KV values.
+
+
+//Checks if settings have been initialized or not, if they havent it sets all values.
+//
 function init_Goal_Begin() {
   let alreadyInit = false;
 
@@ -105,254 +85,389 @@ function init_Goal_Begin() {
   }
 
   if (!alreadyInit) {
-    $kv.set('roomSubject', $settings._Goal);
-    $kv.set('goalValue', $settings.goal_Value);
+    $kv.set('roomSubject', GOAL_LABEL);
+    $kv.set('goalValue', GOAL_AMOUNT);
     $kv.set('goalCurrent', 0);
     $kv.set('HighestGoalTipperAmount', 0);
     $kv.set('HighestGoalTipperName', 'None');
     $kv.set('currentDaddyIs', 'None');
     $kv.set('TopTippers', 'None');
-    $kv.set('goalInitialized', 'true'); // must be a string, not boolean!
+    $kv.set('goalInitialized', 'true'); // still a string, to avoid weirdness
   }
-
-  updateSubject();
-  $callback.create('SessionLeaderAnnounce', 60 * $settings.time_session_leader, true);
 }
 
 
-function updateSubject() {
-  let current = 0;
-  let value = 0;
-  let subject = 'Goal';
 
+//-------------------------------------------------------------------------------------- 
+//                           ↓ HELPER FUNCTIONS
+//--------------------------------------------------------------------------------------
+/**
+ * 🔑 Crown Unlock Checker
+ * Returns true if the crown system has been activated for this session.
+ * Once a user tips at least init_Tip_Value, the crown becomes eligible for announcements.
+ */
+function isCrownUnlocked() {
+  return $kv.get('crownUnlocked') === 'true';
+}
+//--------------------------------------------------------------------------------------
+
+// This helper is crucial for keeping track of current Daddy
+/**
+ * 👑 getCurrentDaddy()
+ * Returns the current top tipper for this session — the live crown holder.
+ * Pulls from Session_AllTippers and sorts by token totals.
+ */
+function getCurrentDaddy() {
   try {
-    current = Number($kv.get('goalCurrent') || 0);
-  } catch (e) {
-    current = 0;
-  }
+    const userList = JSON.parse($kv.get('Session_AllTippers')) || [];
 
-  try {
-    value = Number($kv.get('goalValue') || 0);
+    return userList
+      .filter(name => typeof name === 'string')
+      .sort((a, b) => {
+        const aTotal = Number($kv.get(`Session_TopTipper_${a}`)) || 0;
+        const bTotal = Number($kv.get(`Session_TopTipper_${b}`)) || 0;
+        return bTotal - aTotal;
+      })[0] || 'None';
   } catch (e) {
-    value = 0;
+    return 'None';
   }
+}
 
-  try {
-    subject = $kv.get('roomSubject') || 'Goal';
-  } catch (e) {
-    subject = 'Goal';
-  }
-
-  $room.setSubject(`${subject} @ Goal: ${current} of ${value} tokens.`);
+/**
+ * 🪙 getCurrentDaddyTotal()
+ * Returns the session token total of the current crown holder.
+ * Uses getCurrentDaddy() to find the leader, then pulls their total.
+ */
+function getCurrentDaddyTotal() {
+  const currentDaddy = getCurrentDaddy();
+  return Number($kv.get(`Session_TopTipper_${currentDaddy}`)) || 0;
 }
 
 
-function setDaddyCurrent() {
-  $kv.set('currentDaddyIs', $kv.get('HighestGoalTipperName') || 'None')
+//✅ Returns a formatted string
+//🧠 Use it anywhere you need to drop a leaderboard (public message, overlay, PM, etc.)
+// This is not the Leaderboard Logic, this is to build a leaderboard for Chat.
+
+function buildLeaderboard(scope = 'Session') {
+  const isSession = scope === 'Session';
+  const listKey = isSession ? 'Session_AllTippers' : 'AllTime_TopTippers';
+  let userList = [];
+
+  try {
+    userList = JSON.parse($kv.get(listKey)) || [];
+  } catch (e) {
+    userList = [];
+  }
+
+  const lines = [];
+  lines.push(`* ${isSession ? 'This Session' : 'All-Time'} *`);
+  lines.push(`----- Top 5 ------`);
+
+  // Build the leaderboard from totals
+  const sortedList = userList
+    .filter(name => typeof name === 'string')
+    .sort((a, b) => {
+      const aTotal = Number($kv.get(`${scope}_TopTipper_${a}`)) || 0;
+      const bTotal = Number($kv.get(`${scope}_TopTipper_${b}`)) || 0;
+      return bTotal - aTotal;
+    })
+    .slice(0, 5);
+
+  for (const name of sortedList) {
+    const total = Number($kv.get(`${scope}_TopTipper_${name}`)) || 0;
+    lines.push(`${name}: ${total} tokens`);
+  }
+
+  // Fill in blank spots if needed
+  while (lines.length < 7) {
+    lines.push(`None — 0 tokens`);
+  }
+
+  return lines.join('\n');
 }
 
-function startIntroCallback() {
-  let amount = 0;
-  let current = 0;
-  let goal = 0;
 
+
+
+//-------------------------------------------------------------------------------------
+// ↓ 🧠 CORE LOGIC FUNCTIONS
+//-------------------------------------------------------------------------------------
+//
+// 🧠 This is the Leaderboard Logic ↓
+
+// Called every time someone tips.
+// Updates the user's session total and all-time record (if beaten).
+// Maintains a list of all session tippers and re-sorts the All-Time leaderboard.
+// Session leaderboard is built on-demand using buildLeaderboard('Session')(SEE ↑)
+//--------------------------------------------------------------------------------------
+
+function updateLeaderboardState(username, tokens) {
+  const sessionTipKey = `Session_TopTipper_${username}`;
+  const allTimeTipKey = `AllTime_TopTipper_${username}`;
+
+  // STEP 1: Update session tip total
+  let sessionTotal = 0;
   try {
-    amount = Number($kv.get('HighestGoalTipperAmount') || 0);
+    sessionTotal = Number($kv.get(sessionTipKey)) || 0;
   } catch (e) {
-    amount = 0;
+    sessionTotal = 0;
   }
 
+  const newSessionTotal = sessionTotal + tokens;
+  $kv.set(sessionTipKey, newSessionTotal);
+
+  // STEP 2: Add user to Session_AllTippers (if not already there)
+  let allTippers = [];
   try {
-    current = Number($kv.get('goalCurrent') || 0);
+    allTippers = JSON.parse($kv.get('Session_AllTippers')) || [];
   } catch (e) {
-    current = 0;
+    allTippers = [];
   }
 
-  try {
-    goal = Number($settings.goal_Value || 0);
-  } catch (e) {
-    goal = 0;
+  if (!allTippers.includes(username)) {
+    allTippers.push(username);
+    $kv.set('Session_AllTippers', JSON.stringify(allTippers));
   }
 
-  const Tips = ($settings.init_Tip_Value - 1);
+  // STEP 3: Check if user beat their all-time best
+  let previousBest = 0;
+  try {
+    previousBest = Number($kv.get(allTimeTipKey)) || 0;
+  } catch (e) {
+    previousBest = 0;
+  }
 
-  if (current >= goal) {
-    // 🛑 Goal already reached, do NOT run 'Main' again
-     // ✅ Goal already reached — do NOT run 'Main' again, quietly set Daddy, skip repeat announcements
-     
-  setDaddyCurrent();
+  if (newSessionTotal > previousBest) {
+    // Update their personal all-time best
+    $kv.set(allTimeTipKey, newSessionTotal);
+  }
+
+  // STEP 4: Rebuild and re-rank AllTime_TopTippers
+  let allTimeList = [];
+  try {
+    allTimeList = JSON.parse($kv.get('AllTime_TopTippers')) || [];
+  } catch (e) {
+    allTimeList = [];
+  }
+
+  if (!allTimeList.includes(username)) {
+    allTimeList.push(username);
+  }
+
+  // Clean and sort by all-time record (not session!)
+  allTimeList = allTimeList
+    .filter(name => typeof name === 'string')
+    .sort((a, b) => {
+      const aBest = Number($kv.get(`AllTime_TopTipper_${a}`)) || 0;
+      const bBest = Number($kv.get(`AllTime_TopTipper_${b}`)) || 0;
+      return bBest - aBest;
+    })
+    .slice(0, 5);
+
+  $kv.set('AllTime_TopTippers', JSON.stringify(allTimeList));
+
+  // STEP 5: Update pretty broadcast panel label for top All-Time Daddy
+  const topAllTime = allTimeList[0] || 'None';
+  const topScore = Number($kv.get(`AllTime_TopTipper_${topAllTime}`)) || 0;
+  $kv.set('currentAllTime', `${topAllTime} - ${topScore} tokens`);
+}
+
+//--------------------------------------------------------------------------
+//
+//                     CORE CROWN/DETHRONE LOGIC
+//
+//-------------------------------------------------------------------------
+/**
+ * 💼 CORE LOGIC: Evaluates crown status for a user
+ * - Compares a user's total to the current session leader
+ * - Determines dethrone eligibility
+ * - Returns dethrone info for use in logic or messages
+ *
+ * @param {string} username - The challenger
+ * @returns {{
+ *   currentDaddy: string,
+ *   challengerTotal: number,
+ *   daddyTotal: number,
+ *   dethroneCost: number,
+ *   remaining: number
+ * }}
+ */
+function evaluateCrownStatus(username) {
+  let currentDaddy = 'None';
+  let daddyTotal = 0;
+  let challengerTotal = 0;
+
+  try {
+    const sessionList = JSON.parse($kv.get('Session_AllTippers')) || [];
+    currentDaddy = sessionList[0] || 'None';
+  } catch (e) {
+    currentDaddy = 'None';
+  }
+
+  // Get the current Daddy's total
+  try {
+    daddyTotal = Number($kv.get(`Session_TopTipper_${currentDaddy}`)) || 0;
+  } catch (e) {
+    daddyTotal = 0;
+  }
+
+  // Get the challenger’s total
+  try {
+    challengerTotal = Number($kv.get(`Session_TopTipper_${username}`)) || 0;
+  } catch (e) {
+    challengerTotal = 0;
+  }
+
+  const dethroneCost = daddyTotal + 1;
+  const remaining = dethroneCost - challengerTotal;
+
+  return {
+    currentDaddy,
+    challengerTotal,
+    daddyTotal,
+    dethroneCost,
+    remaining
+  };
+}
+
+
+
+//---------------------------------------------------------------------------
+//
+//                          APP MESSAGE LOGIC ↓
+// All app messages are controlled (for the most part) by the following code.
+//---------------------------------------------------------------------------- 
+
+//Unicode Map for bolded messages/usernames
+function toUnicodeBold(str) {
+  const boldMap = {
+    A: '𝗔', B: '𝗕', C: '𝗖', D: '𝗗', E: '𝗘', F: '𝗙', G: '𝗚', H: '𝗛', I: '𝗜', J: '𝗝',
+    K: '𝗞', L: '𝗟', M: '𝗠', N: '𝗡', O: '𝗢', P: '𝗣', Q: '𝗤', R: '𝗥', S: '𝗦', T: '𝗧',
+    U: '𝗨', V: '𝗩', W: '𝗪', X: '𝗫', Y: '𝗬', Z: '𝗭',
+    a: '𝗮', b: '𝗯', c: '𝗰', d: '𝗱', e: '𝗲', f: '𝗳', g: '𝗴', h: '𝗵', i: '𝗶', j: '𝗷',
+    k: '𝗸', l: '𝗹', m: '𝗺', n: '𝗻', o: '𝗼', p: '𝗽', q: '𝗾', r: '𝗿', s: '𝘀', t: '𝘁',
+    u: '𝘂', v: '𝘃', w: '𝘄', x: '𝘅', y: '𝘆', z: '𝘇',
+    0: '𝟬', 1: '𝟭', 2: '𝟮', 3: '𝟯', 4: '𝟰', 5: '𝟱', 6: '𝟲', 7: '𝟳', 8: '𝟴', 9: '𝟵'
+  };
+
+  return str.split('').map(c => boldMap[c] || c).join('');
+}
+
+
+
+
+const messageList = {
+  // Separated by a comma, this is our List of App Messages.
+   
+   
+   
+   //System Messages / Error Reporting
+
+    unknownMsgKey: { // Message Key is unknown.
+    text: "❓ Unknown message key: key",
+    color: "#ffffff",
+    bgColor: "#4f46e5"
+  },
+    wrongFormatSetAllTime: { // Wrong format for /setalltime command.
+    text: "⚠️ Incorrect format. Use: /setalltime username tokens.",
+    color: "#ffffff",
+    bgColor: "#4f46e5"
+  },
+   //Game Messages / Daddy Messages
+    closeCall: { // User is really close to the lead. .
+    text: "`😱 ${toUnicodeBold(user)} is just ${tokensNeeded} tokens away from stealing the crown!`",
+    color: "#ffffff",
+    bgColor: "#4f46e5"
+  },
+    crownDaddy: { // Daddy has been crowned.
+    text: "User 'username' is the Daddy with 'amount' tokens tipped.",
+    color: "#ffffff",
+    bgColor: "#4f46e5"
+  },
+   deThronedDaddy: { // Daddy has been de-throned.
+    text: "User 'previousDaddy' was De-throned by 'New Daddy' The crown has been stolen.",
+    color: "#ffffff",
+    bgColor: "#4f46e5"
+  },
+  isDaddy: { // Show this message whenever someone becomes the Daddy
+    text: "This username is the new Daddy!",
+    color: "#ffffff",
+    bgColor: "#4f46e5"
+  },
+  prizeWon: { // The Daddy Prize message is defined in $settings.goal_Prize
+    text: "Daddy won the prize!",
+    color: "#ffffff",
+    bgColor: "#4f46e5",
+    callback: true
+  },
+  goalWon: { // Goal complete!
+    text: "🎯 Goal complete!",
+    color: "#000000",
+    bgColor: "#facc15"
+  }
+};
+
+//-----------------------------------------------------------------------------------
+
+// Below is the sendMsg Function. 
+//It is designed to handle / route all of the messages for the app.
+
+function sendMsg(key, ...args) {
+  const msg = messageList[key];
+
+  // ❌ If message key isn't defined, throw a helpful error
+  if (!msg) {
+    $room.sendNotice("❓ Unknown message key: " + key);
     return;
   }
 
-  if (amount > Tips) {
-    $callback.cancel('Intro');
-    setDaddyCurrent();
-    sendDaddyNoticeTo();
-    $callback.create('Main', 60 * $settings.time_step, true);
+  // 🧠 Evaluate text if it's a function, or use as-is
+  let text = typeof msg.text === 'function' ? msg.text(...args) : msg.text;
+
+  // 🎯 Handle subject messages first (overrides all other types)
+  if (msg.type === 'subject') {
+    $room.setSubject(text);
+    if (msg.log === true) {
+      console.log(`[sendMsg] Subject set to: ${text}`);
+    }
+    return; // Skip chat message
+  }
+
+  // 🎨 Chat/PM message options
+  const options = {
+    color: msg.color || "#ffffff",
+    bgColor: msg.bgColor || "#000000"
+  };
+
+  // 💌 Route private messages to specific user
+  if (msg.private === true) {
+    const targetUser = args[0]; // Must pass username as first argument
+    options.toUsername = targetUser;
+  }
+
+  // 🔁 Define what actually sends the message
+  const sendNow = () => {
+    $room.sendNotice(text, options);
+    if (msg.log === true) {
+      console.log(`[sendMsg] Message sent:`, { key, text, options });
+    }
+  };
+
+  // ⏱️ Apply delay if defined, otherwise send immediately
+  if (msg.delay) {
+    $callback.create('msg_' + key, msg.delay, false, sendNow);
   } else {
-    $callback.create('Intro', 60 * $settings.time_step, true);
+    sendNow();
   }
 }
 
+// 👀 Utility: Check if a message is eligible to be used by a callback loop
+sendMsg.isCallbackEnabled = (key) => {
+ return messageList[key] && messageList[key].callback === true;
+
+};
 
 
+//--------------------- END OF MESSAGES SECTION --------------------
 
-
-
-function updateTopTippers(type, username, tokens) {
-  const keyPrefix = `${type}_TopTipper_`;
-  const listKey = `${type}_TopTippers`;
-  const userKey = `${keyPrefix}${username}`;
-
-  // Safely get the current total
-  let currentTotal = 0;
-  try {
-    currentTotal = Number($kv.get(userKey));
-  } catch (e) {
-    currentTotal = 0;
-  }
-
-  const newTotal = currentTotal + tokens;
-  $kv.set(userKey, newTotal);
-
-  // Safely parse the leaderboard
-  let topList = [];
-  try {
-    topList = JSON.parse($kv.get(listKey)) || [];
-  } catch (e) {
-    topList = [];
-  }
-
-  if (!topList.includes(username)) {
-    topList.push(username);
-  }
-
-  topList = topList.filter(name => typeof name === 'string');
-  topList.sort((a, b) => {
-    let aTotal = 0;
-    let bTotal = 0;
-    try {
-      aTotal = Number($kv.get(`${keyPrefix}${a}`));
-    } catch (e) {
-      aTotal = 0;
-    }
-    try {
-      bTotal = Number($kv.get(`${keyPrefix}${b}`));
-    } catch (e) {
-      bTotal = 0;
-    }
-    return bTotal - aTotal;
-  });
-
-  topList = topList.slice(0, 5);
-  $kv.set(listKey, JSON.stringify(topList));
-
-  // NEW: Set the current all-time top tipper if we're working with AllTime scope
-  if (type === 'AllTime' && topList.length > 0) {
-    const topUser = topList[0];
-    let topTokens = 0;
-    try {
-      topTokens = Number($kv.get(`${keyPrefix}${topUser}`));
-    } catch (e) {
-      topTokens = 0;
-    }
-    // Update the currentAllTime key with combined info
-    $kv.set('currentAllTime', `${topUser} - ${topTokens} tokens`);
-  }
-}
-
-
-
-
-
-function firePrizeNotice() {
-  const daddy = $kv.get('HighestGoalTipperName') || 'None';
-  const tokens = $kv.get('HighestGoalTipperAmount') || 0;
-  const prize = $settings.goal_Prize || 'a mystery treat 👀';
-  const msg = `🎉 Congratulations ${daddy}! You’ve won the goal prize as the Top Daddy with ${tokens} tokens tipped!\n💝 Prize: ✨${prize}✨`;
-
-    $room.sendNotice(msg, {
-      color: '#ffffff',
-      bgColor: '#000000'
-    });
-
-}
-
-function sendDaddyNotice(){
-  sendDaddyNoticeTo()
-}
-
-// When someone becomes Daddy, send a notice to announce it to the room. 
-function sendDaddyNoticeTo(username){
-  var record = $kv.get('HighestGoalTipperAmount') + 1;
-  let message = $kv.get('HighestGoalTipperName') + ' is ' + $kv.get('userNameIs') + '\'s Daddy with ' + $kv.get('HighestGoalTipperAmount') + ' tokens tipped.' + end_line
-  + '\n Tip at least ' + record + ' tokens to become the NEW Daddy. ' + end_line
-  if ($settings.prize_enable === true) {
-    message += '\n Top Daddy takes the prize when the goal is reached!😏 Today’s reward is: ' + $settings.goal_Prize
-  }
-  sendStyledNotice(message, username);
-}
-
-//send Daddy a message when he wins the goal prize.
-//also send Daddy a PM.
-function goalPrizeMsg() {
-  const current = Number($kv.get('goalCurrent') || 0);
-  const goal = Number($kv.get('goalValue') || 0);
-
-  if (current >= goal && $settings.prize_enable === true) {
-    const topDaddy = $kv.get('HighestGoalTipperName') || null;
-    const prize = $settings.goal_Prize || 'a mystery treat 👀';
-
-    if (topDaddy && topDaddy !== 'None') {
-      
-      $callback.create('PrizeNotice', 2, false);
-      const msg = `🎉 You crushed it, ${topDaddy}!\nYou've earned the prize for completing the goal!\n\n💝 Your prize is: ${prize}`;
-
-      $room.sendNotice(msg, {
-        toUsername: topDaddy,
-        color: '#ffffff',       // White text
-        bgColor: '#000000'      // Black background
-      });
-    }
-  }
-}
-
-
-
-
-
-// This should run when the app stops
-function onStop() {
-  let topListRaw = '';
-  try {
-    topListRaw = $kv.get('Session_TopTippers');
-  } catch (e) {
-    topListRaw = '[]';
-  }
-
-  let topList = [];
-  try {
-    topList = JSON.parse(topListRaw);
-    if (!Array.isArray(topList)) throw new Error();
-  } catch (e) {
-    topList = [];
-  }
-
-  for (const name of topList) {
-    $kv.remove(`Session_TopTipper_${name}`);
-  }
-
-  try {
-    $kv.remove('Session_TopTippers');
-  } catch (e) {
-    // Key might not exist — ignore
-  }
-  announceAppStopped();
-$kv.remove('HighestGoalTipperAmount')
-$kv.remove('HighestGoalTipperName')
-$kv.remove('goalCurrent')
-$kv.remove('currentDaddyIs')
-  cancelAllCallbacks();
-
-}
 
