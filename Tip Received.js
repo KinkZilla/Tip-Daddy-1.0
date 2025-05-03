@@ -1,43 +1,40 @@
-$kv.incr('goalCurrent', $tip.tokens);
-updateSubject();
-$room.reloadPanel();
-updateTopTippers('Session', $user.username, $tip.tokens);  // gets wiped
-updateTopTippers('AllTime', $user.username, $tip.tokens);  // lives forever
+/**
+ * 💸 Tip Received 1.0.5
+ * This event is triggered every time a user tips during the session.
+ */
 
-let topName = 'None';
-let currentHigh = 0;
+// ✅ STEP 1: Update the session leaderboard 💯
+updateSessionTippers($user.username, $tip.tokens);
 
-try {
-  topName = $kv.get('HighestGoalTipperName') || 'None';
-} catch (e) {
-  topName = 'None';
+// ✅ STEP 2: Rebuild the session leaderboard after updating 💯
+const sessionLeaderboard = buildSessionLeaderboard();
+
+// ✅ STEP 3: Find this user's new total session token count  💯
+const userEntry = sessionLeaderboard.find(entry => entry.username === $user.username);
+const sessionTotal = userEntry ? userEntry.tokens : 0;
+
+// ✅ STEP 4: Update the All-Time leaderboard, but only if necessary 💯
+updateAllTimeTippers($user.username, sessionTotal);
+
+
+// ✅ STEP 5: Update the Goal Progress (We always want that to be live/instant.) 💯
+
+updateGoalProgress($tip.tokens);  // Checks goalCurrent, adds the new tokens, saves that new value to goalCurrent.
+
+if (!$kv.get('panelLocked')) {
+  setDefaultPanel();
+  $room.reloadPanel();
 }
 
-try {
-  currentHigh = Number($kv.get('HighestGoalTipperAmount') || 0);
-} catch (e) {
-  currentHigh = 0;
-}
 
-if ($user.username === topName) {
-  // They’re already the top tipper — just add to their total
-  try {
-    $kv.incr('HighestGoalTipperAmount', $tip.tokens);
-  } catch (e) {
-    $kv.set('HighestGoalTipperAmount', $tip.tokens); // fallback safety
-  }
+// ✅ STEP 6: Threshold Check, once reached, crowns the first daddy. (Runs once/session!)
+handleCrownReveal($user.username); 
 
-} else {
-  // They’re not the top — check if this tip puts them in the lead
-  const newTotal = $tip.tokens; // If you ever track running total per-user, adjust here
+// ✅ STEP 7:
+handleCrownTransition($user.username);
 
-  if (newTotal > currentHigh) {
-    $kv.set('HighestGoalTipperAmount', newTotal);
-    $kv.set('HighestGoalTipperName', $user.username);
-  }
-}
+// ✅ STEP 8: Check to see if they won the Goal Prize
+checkGoalPrize($tip.tokens);
 
-goalPrizeMsg();
+// ✅ STEP 9: Send User Messages
 
-// added to test tip bar
-startIntroCallback();
