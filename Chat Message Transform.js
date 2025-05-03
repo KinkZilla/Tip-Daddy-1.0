@@ -1,5 +1,5 @@
 try {
-  if ($user.username == $kv.get('HighestGoalTipperName')) {
+  if ($user.username == $kv.get('sessionDaddy')) {
     $message.setBody($settings.daddy_icon + ' ' +  $message.body);
     $message.setBgColor($settings.daddy_background);
   }
