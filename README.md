@@ -1,6 +1,6 @@
 # Tip Daddy 1.0
 
-👑 A Chaturbate extension that tracks top tippers, displays real-time leaderboards, 
+👑 A Chaturbate application that tracks top tippers, displays real-time leaderboards, 
 and rewards the reigning Daddy with a custom prize. Built for fun, flair, and full-room hype.
 
 ---
