@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Tip Daddy is a live tipping leaderboard app for Chaturbate. Reward your top tippers, track goals, and crown your Daddy.">
+<meta name="description" content="Tip Daddy is a competitive tipping app for Chaturbate with live leaderboards, countdown-based menu items, and an epic crown system.">
+
   <title>Tip Daddy</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -80,28 +81,40 @@
     }
     #how-to {
       margin-top: 4rem;
-      max-width: 700px;
+      max-width: 800px;
     }
     #how-to h2 {
       font-size: 1.8rem;
       color: #facc15;
       margin-bottom: 1rem;
     }
-    #how-to p {
-      font-size: 1.1rem;
+    #how-to p, #how-to li {
+      font-size: 1.05rem;
       color: #ccc;
       line-height: 1.6;
+    }
+    ul.tip-guide {
+      padding-left: 1.2rem;
+    }
+    ul.tip-guide li {
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="tipdaddy.png" alt="Tip Daddy Logo">
+    <img src="tipdaddy.png" alt="Tip Daddy Logo (Make sure tipdaddy.png is in your project root)">
     <p class="description">Tip Daddy is a custom Chaturbate app that lets your viewers compete to be your top tipper. It tracks session and all-time leaders, rewards them with prizes, and crowns your Daddy live in chat.</p>
     <a class="button green" href="#how-to">How to Add to Your Stream</a>
   </header>
 
   <section class="features">
+    <div class="feature">
+    <h2>NEW: ⏱ Timed Tip Menu Items</h2>
+    <p>Let fans trigger special events like dances or shows with countdown-based menu items. Automatically updates your broadcast panel and queues multiple requests.</p>
+    </div>
+
+    
     <div class="feature">
       <h2>👑 Real-Time Leaderboards</h2>
       <p>Tracks both session and all-time top tippers, with smart formatting and accurate token tracking.</p>
@@ -119,17 +132,41 @@
       <p>Handles reconnects, missing keys, and race conditions gracefully so your app stays stable.</p>
     </div>
   </section>
- <a class="button" href="https://github.com/YOUR_USERNAME/TIPDADDY_REPO" target="_blank">View on GitHub</a>
-    <br>
+
+  <a class="button" href="https://github.com/YOUR_USERNAME/TIPDADDY_REPO" target="_blank">View on GitHub</a>
+
   <section id="how-to">
     <h2>📺 How to Add Tip Daddy to Your Stream</h2>
-    <p>
-      1. Head over to your Chaturbate broadcast dashboard and open the <strong>Apps</strong> section.<br>
-      2. In the search bar, type <strong>Tip Daddy</strong>.<br>
-      3. Click to install the app and make sure it is added to your active apps list.<br>
-      4. Grant all permissions when prompted — this ensures the broadcast portal responds properly.<br>
-      5. You’re good to go! Tokens will start tracking, and your viewers can start tipping to become Daddy 👑
-    </p>
+    <ul class="tip-guide">
+      <li>Open your Chaturbate broadcast dashboard and navigate to the <strong>Apps</strong> tab.</li>
+      <li>Search for <strong>Tip Daddy</strong> and click install.</li>
+      <li>Enable all permissions when prompted — especially <strong>Broadcast Panel Access</strong>.</li>
+      <li>Customize your <strong>Goal Value</strong>, <strong>Initial Crown Cost</strong>, and <strong>Time Step</strong> in settings.</li>
+      <li>That’s it! When your broadcast starts, Tip Daddy will auto-run and begin tracking.</li>
+    </ul>
+
+    <h2>📘 Commands & Examples</h2>
+    <ul class="tip-guide">
+      <li><code>/reset</code> – Clears all session data, including the crown and progress toward the goal. Use if your stream restarts or you want to begin fresh mid-show.</li>
+      <li><code>/clearalltime</code> – Permanently clears all-time leaderboard data. <strong>This cannot be undone!</strong></li>
+      <li><code>/setalltime username tokens</code> – Manually set an all-time tip record (e.g. <code>/setalltime CoolGuy123 2000</code>).</li>
+      <li><code>/menu</code> – Show your current tip menu, including timers and token costs.</li>
+      <li><code>/setmenu [item name] [tokens]</code> – Adds a tip menu item.</li>
+      <li><code>/setmenu [item name] [tokens] [minutes]</code> – Adds a timed menu item that shows a countdown in the panel.</li>
+      <li><code>/removeitem [item name]</code> – Removes an item from your tip menu (case-insensitive).</li>
+      <li><code>/clearmenu</code> – Clears all menu items.</li>
+
+    </ul>
+
+    <h2>✨ Features in Action</h2>
+    <ul class="tip-guide">
+      <li><strong>Crown System:</strong> Users tip to take the Daddy crown. If someone tips more than the current Daddy, they steal the title. Chat displays a dethrone message like:<br><code>🔥 New Daddy! CoolGuy123 just took the crown from King69 with a 700 tip!</code></li>
+      <li><strong>All-Time Rankings:</strong> If a user beats their personal best, their all-time record is updated. If they enter the Top 5, they appear on the leaderboard and may earn the All-Time Daddy spot.</li>
+      <li><strong>Broadcast Panel:</strong> Your current goal progress, session Daddy, and all-time top tipper are shown on screen to hype up the room.</li>
+      <li><strong>Timed Menu Items:</strong> You can set custom tip rewards that start a timer. For example:<br><code>🕒 5-Minute Tease Show – 250 tokens</code> will launch a visible countdown in the broadcast panel.</li>
+      <li><strong>Private Feedback:</strong> Non-Daddies who tip get a private message like:<br><code>You're just 75 tokens away from taking the crown! 👑</code></li>
+      <li><strong>Repeating Messages:</strong> The app can remind users who's Daddy and how many tokens are needed to take the lead.</li>
+    </ul>
   </section>
 
   <footer>
