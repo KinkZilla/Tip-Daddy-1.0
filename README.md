@@ -22,17 +22,18 @@ A Chaturbate application that tracks top tippers, displays real-time leaderboard
 ## 💬 Commands
 
 | Command                           | Function                                                            |
-|----------------------------------|---------------------------------------------------------------------|
-| `/leader`                        | Show the current session leaderboard                               |
-| `/alltime`                       | Show the all-time leaderboard                                      |
-| `/setalltime username tokens`    | Manually set a user's all-time tip record                          |
-| `/clearalltime`                 | Clear the all-time leaderboard (⚠️ irreversible)                   |
-| `/reset`                         | Reset session and crown logic without affecting all-time data      |
-| `/setmenu Item Price`            | Add a tip menu item (no timer)                                     |
-| `/setmenu Item Price Minutes`    | Add a timed tip menu item with countdown display                   |
-| `/removeitem Item`              | Remove a tip menu item by name (case-insensitive)                  |
-| `/clearmenu`                     | Clear all tip menu items                                           |
-| `/menu`                          | Post the current tip menu in chat                                  |
+|----------------------------------|----------------------------------------------------------------------|
+| `/leader`                        | Show the current session leaderboard                                 |
+| `/alltime`                       | Show the all-time leaderboard                                        |
+| `/setalltime username tokens`    | Manually set a user's all-time tip record                            |
+| `/clearalltime`                  | Clear the all-time leaderboard (⚠️ irreversible)                     |
+| `/reset`                         | Reset session and crown logic without affecting all-time data        |
+| `/setmenu Item Price`            | Add a tip menu item (no timer)                                       |
+| `/setmenu Item Price Minutes`    | Add a timed tip menu item with countdown display                     |
+| `/removeitem Item`               | Remove a tip menu item by name (case-insensitive)                    |
+| `/clearmenu`                     | Clear all tip menu items                                             |
+| `/menu`                          | Post the current tip menu in chat                                    |
+| `/###1`                          | Dev Command to clear ALL keys. Runs $kv.clear                        |
 
 ---
 
