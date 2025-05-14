@@ -1,5 +1,5 @@
 /**
- * 💸 Tip Received 1.0.4.1
+ * 💸 Tip Received 1.0.5
  * This event is triggered every time a user tips during the session.
  */
 console.log(`🔥 TIP EVENT: ${$user.username} tipped ${$tip.tokens} tokens`);
