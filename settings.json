@@ -1,0 +1,288 @@
+{
+  "use_default_username": {
+    "type": "boolean",
+    "title": "Do you want to use your default Username?",
+    "description": "Uncheck this box to edit your displayed name in the app. ",
+    "default": true
+  },
+  "alt_username": {
+    "type": "string",
+    "title": "Name",
+    "description": "Replaces your username in the notice.   ",
+    "default": "❤ Erika_Foxx_❤",
+    "minLength": 2,
+    "maxLength": 40
+  },
+  "use_Tags": {
+    "type": "boolean",
+    "title": "Hashtags ",
+    "description": "Do you want to add hashtags to the room subject?",
+    "default": true
+  },
+  "hash_Tags": {
+    "type": "string",
+    "title": "Room hashtags - Optional",
+    "minLength": 1,
+    "maxLength": 125,
+    "description": "Adds customized hashtags to the room subject.",
+    "default": "#tipdaddy #daddy #prize"
+  },
+  "goal_Emoji": {
+    "type": "string",
+    "title": "Room subject emoji",
+    "description": "Change the emoji in the subject line.",
+    "minLength": 1,
+    "default": "🎯",
+    "maxLength": 2
+  },
+  "goal": {
+    "type": "string",
+    "title": "Goal",
+    "description": "What are users tipping for? ",
+    "default": "Squirt Show !",
+    "minLength": 1,
+    "maxLength": 120,
+    "required": true
+  },
+  "goal_Value": {
+    "type": "number",
+    "title": "Goal Price",
+    "description": "What is the target goal in tokens?",
+    "default": 3000,
+    "minimum": 1000,
+    "maximum": 10000,
+    "required": true
+  },
+  "prize_enable": {
+    "type": "boolean",
+    "default": true,
+    "title": "Prize for top tipper at end of goal? (Highly Recommended)",
+    "description": "Check this if you want to give Daddy a prize at the end."
+  },
+  "goal_Prize": {
+    "type": "string",
+    "title": "Daddy's Prize",
+    "description": "A special Prize for Daddy once the goal is over.",
+    "default": "🔒 Password Show ⏳15 Minutes + 👻 Snapchat",
+    "minLength": 1,
+    "maxLength": 50
+  },
+  "rolling_notif_1": {
+    "type": "number",
+    "required": true,
+    "title": "Goal Prize Announcement Frequency",
+    "description": "Send the Goal Prize notice every (x) amount of minutes.",
+    "default": 2,
+    "minimum": 1,
+    "maximum": 60
+  },
+  "goal_Prize_Txt": {
+    "type": "string",
+    "title": "Goal Prize Text Color",
+    "description": "Goal Prize announcement text color (Default is White)",
+    "minLength": 7,
+    "maxLength": 7,
+    "default": "#ffffff"
+  },
+  "goal_Prize_BG": {
+    "type": "string",
+    "title": "Goal Prize Background Color",
+    "description": "Background color of the goal prize notice. (Default Light Blue)",
+    "required": true,
+    "minLength": 7,
+    "default": "#3DBDD4",
+    "maxLength": 7
+  },
+  "init_Tip_Value": {
+    "type": "number",
+    "required": true,
+    "title": "Initial Tip Value",
+    "description": "This is the minimum amount someone tips to become Daddy.",
+    "default": 100,
+    "minimum": 10,
+    "maximum": 150
+  },
+  "nearly_There": {
+    "type": "number",
+    "title": "Close Call Threshold",
+    "description": "Sends  PM \" this many tokens or less from taking the crown.\" ",
+    "minimum": 25,
+    "maximum": 3000,
+    "required": true,
+    "default": 300
+  },
+  "daddy_icon": {
+    "type": "string",
+    "title": "Daddy's icon.",
+    "required": true,
+    "default": "👑",
+    "description": "A crown by default. You can copy/paste other icons.",
+    "minLength": 1,
+    "maxLength": 3
+  },
+  "daddy_background": {
+    "type": "string",
+    "default": "#8EF562",
+    "title": "Daddy's background color in chat.",
+    "required": true,
+    "description": "Default color is Green. Values must be in Hex format.",
+    "minLength": 7,
+    "maxLength": 7
+  },
+  "time_value": {
+    "type": "number",
+    "required": true,
+    "title": "Frequency of tip notices. (The purple ones.)",
+    "description": "Send notice every  (X) amount of minutes.",
+    "minimum": 1,
+    "maximum": 20,
+    "default": 2
+  },
+  "txt_Color": {
+    "type": "string",
+    "title": "Announcement Text Color",
+    "required": true,
+    "default": "#ffffff",
+    "description": "Text color of the Announcements. Default is white.",
+    "maxLength": 7,
+    "minLength": 7
+  },
+  "bkg_Color": {
+    "type": "string",
+    "title": "Announcement Background Color",
+    "required": true,
+    "default": "#000000",
+    "description": "Background color of announcements. Default is black.",
+    "maxLength": 7,
+    "minLength": 7
+  },
+  "session_leader_bg": {
+    "type": "string",
+    "title": "Leaderboard background color.",
+    "required": true,
+    "description": "Default background color is black. Values must be in Hex format.",
+    "default": "#000000",
+    "maxLength": 7,
+    "minLength": 7
+  },
+  "session_leader_text": {
+    "type": "string",
+    "title": "Leaderboard text color.",
+    "default": "#ffffff",
+    "description": "Default text color is white. Values must be in Hex format.",
+    "minLength": 7,
+    "maxLength": 7,
+    "required": true
+  },
+  "time_session_leader": {
+    "type": "number",
+    "title": "Leaderboard notice frequency.",
+    "description": "Display the leaderboard notice every (x) amount of minutes.",
+    "minimum": 1,
+    "maximum": 20,
+    "required": true,
+    "default": 5
+  },
+  "susp_Delay": {
+    "type": "number",
+    "title": "Suspense Delay",
+    "description": "Default suspense delay is 10 seconds.",
+    "required": true,
+    "maximum": 45,
+    "minimum": 2,
+    "default": 4
+  },
+  "thank_You_Daddy": {
+    "type": "string",
+    "required": true,
+    "title": "Custom thank you message for Daddy, when he tips more!",
+    "minLength": 1,
+    "maxLength": 150,
+    "default": " 💖 Thank you Daddy !  💖",
+    "description": "Sends Daddy a thank you message when he tips more tokens."
+  },
+  "thank_you_text": {
+    "type": "string",
+    "title": "Thank You  Text Color",
+    "description": "Text color of the thank you message.",
+    "minLength": 7,
+    "default": "#ffffff",
+    "required": true,
+    "maxLength": 7
+  },
+  "thank_you_background": {
+    "type": "string",
+    "title": "Thank You Background Color",
+    "description": "Background color of the thank you message.",
+    "default": "#cc02d6",
+    "minLength": 7,
+    "maxLength": 7,
+    "required": true
+  },
+  "tip_menu": {
+    "type": "boolean",
+    "title": "Tip menu",
+    "description": "Enable the Tip Menu. You'll set this up in your chat.",
+    "default": false
+  },
+  "tipMenu_textColor": {
+    "type": "string",
+    "title": "Tip Menu Text Color",
+    "description": "Color of the tip menu text. ",
+    "default": "#85FFFF",
+    "minLength": 7,
+    "maxLength": 7,
+    "required": true
+  },
+  "tipMenu_bgColor": {
+    "type": "string",
+    "title": "Tip Menu Background Color",
+    "description": "Color of the tip menu background",
+    "default": "#FF33CC",
+    "minLength": 7,
+    "maxLength": 7,
+    "required": true
+  },
+  "tip_menu_emoji": {
+    "type": "string",
+    "title": "Tip Menu Emoji",
+    "default": ":rb_star_small",
+    "maxLength": 50,
+    "minLength": 1,
+    "description": "Either copy/paste emoji, or paste a gif like :banana"
+  },
+  "tip_menu_time": {
+    "type": "number",
+    "title": "Tip Menu Notice Frequency",
+    "description": "Send the Tip Menu Notice every (X) amount of minutes.",
+    "default": 4,
+    "minimum": 1,
+    "maximum": 30,
+    "required": true
+  },
+  "menu_gif": {
+    "type": "string",
+    "title": "Tip Menu Gif ",
+    "description": "You can add an extra gif to Tip Menu.",
+    "minLength": 1,
+    "maxLength": 60
+  },
+  "menu_alert_text": {
+    "type": "string",
+    "title": "Tip Menu Alert Text Color",
+    "description": "Text color of the tip menu purchase alert notice.",
+    "maxLength": 7,
+    "minLength": 7,
+    "default": "#EA21FC",
+    "required": true
+  },
+  "menu_alert_bg": {
+    "type": "string",
+    "title": "Menu Alert Background Color",
+    "description": "Background color of the tip menu purchase alert notice.",
+    "required": true,
+    "default": "#78FAFA",
+    "minLength": 7,
+    "maxLength": 7
+  }
+}
