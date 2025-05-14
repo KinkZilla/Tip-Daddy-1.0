@@ -255,3 +255,132 @@ body {
   </footer>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tip Daddy v1.0.5 – README</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #f5f5f5;
+      font-family: 'Inter', sans-serif;
+      padding: 2rem;
+      line-height: 1.7;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1, h2, h3 {
+      color: #facc15;
+    }
+    code {
+      background-color: #1e1e1e;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: #facc15;
+    }
+    pre {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    a {
+      color: #67e8f9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 0.6rem;
+      text-align: left;
+    }
+    th {
+      background-color: #222;
+      color: #facc15;
+    }
+    tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+<h1>👑 Tip Daddy v1.0.5 – README</h1>
+<p><strong>Status:</strong> Live and thriving · <strong>Author:</strong> Kink_Zilla · <strong>Powered by:</strong> Nova / Novaware™</p>
+
+<h2>🚀 Features</h2>
+<ul>
+  <li>Tracks both <strong>Session</strong> and <strong>All-Time</strong> top tippers</li>
+  <li>Real-time <strong>tip goal progress</strong> with broadcast panel</li>
+  <li><strong>Prize alerts</strong> for the current Daddy when the goal is reached</li>
+  <li><strong>Crown System</strong> with dethrone logic and chat announcements</li>
+  <li>Interactive <strong>tip menu system</strong> with <em>timed item support</em></li>
+  <li><strong>Auto-queue system</strong> for multiple timed menu events</li>
+  <li><strong>KV-safe architecture</strong> with crash prevention</li>
+  <li><strong>Fully customizable</strong> settings & design options</li>
+</ul>
+
+<h2>💬 Commands</h2>
+<table>
+  <tr><th>Command</th><th>Function</th></tr>
+  <tr><td><code>/leader</code></td><td>Show the current session leaderboard</td></tr>
+  <tr><td><code>/alltime</code></td><td>Show the all-time leaderboard</td></tr>
+  <tr><td><code>/setalltime username tokens</code></td><td>Manually set a user's all-time tip total</td></tr>
+  <tr><td><code>/clearalltime</code></td><td>Clear all-time leaderboard (irreversible)</td></tr>
+  <tr><td><code>/reset</code></td><td>Reset session and crown logic (keeps all-time)</td></tr>
+  <tr><td><code>/setmenu Item Price</code></td><td>Add a menu item</td></tr>
+  <tr><td><code>/setmenu Item Price Minutes</code></td><td>Add a timed item with countdown</td></tr>
+  <tr><td><code>/removeitem Item</code></td><td>Remove an item by name</td></tr>
+  <tr><td><code>/clearmenu</code></td><td>Remove all menu items</td></tr>
+  <tr><td><code>/menu</code></td><td>Show current tip menu</td></tr>
+</table>
+
+<h2>⚙️ Settings</h2>
+<p>Managed via <a href="https://chaturbate.com/apps/">Chaturbate Dev Portal</a>. Includes:</p>
+<ul>
+  <li>Goal & prize labels</li>
+  <li>Tip menu text + background color</li>
+  <li>Emoji and icons</li>
+  <li>Display themes and frequencies</li>
+</ul>
+
+<h2>📦 Files</h2>
+<ul>
+  <li><code>Shared Code.js</code> — Core logic and panel state</li>
+  <li><code>Tip Received.js</code> — Handles tip logic and queues</li>
+  <li><code>App Start/Stop.js</code> — Initializes/resets session</li>
+  <li><code>Callback.js</code> — Timed callbacks and effects</li>
+  <li><code>Broadcast Panel Update.js</code> — Controls panel display</li>
+  <li><code>Chat Message.js</code> — Slash commands</li>
+  <li><code>Chat Message Transform.js</code> — Adds Daddy flair</li>
+  <li><code>settings.json</code> — Full dev settings structure</li>
+  <li><code>TipDaddy_Wiki.md</code> — Technical notes</li>
+</ul>
+
+<h2>📝 Changelog</h2>
+<p><strong>v1.0.5:</strong> Timed Tip Menu Items · Queue System · Menu Styling · Improved Crash Handling</p>
+<p><a href="TipDaddy_v1.0.5_Changelog.md">Full Changelog →</a></p>
+
+<h2>💬 Support</h2>
+<p>Built with love, sass, and Nova™.  
+Want to collab or remix? <em>Hit me up.</em></p>
+
+<p class="footer">© 2025 Kink_Zilla – Licensed MIT. Use it, remix it, crown yourself with it. Just give credit 😉</p>
+
+</body>
+</html>
