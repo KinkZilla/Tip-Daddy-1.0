@@ -59,6 +59,40 @@
       font-size: 0.9rem;
       color: #555;
     }
+    a.button.checkered-hover {
+  position: relative;
+  background: #facc15; /* default background */
+  color: #000;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
+  z-index: 1;
+  overflow: hidden;
+}
+
+a.button.checkered-hover::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: url('A_digital_2D_graphic_features_a_pattern_of_pink_an.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1;
+}
+
+a.button.checkered-hover:hover::before {
+  opacity: 1;
+}
+
+a.button.checkered-hover:hover {
+  color: #fff;
+}
+
     a.button {
       display: inline-block;
       margin-top: 2rem;
@@ -126,7 +160,7 @@ body {
   <header>
     <img src="tipdaddy.png" alt="Tip Daddy Logo">
     <p class="description">Tip Daddy is a custom Chaturbate app that lets your viewers compete to be your top tipper. It tracks session and all-time leaders, rewards them with prizes, and crowns your Daddy live in chat.</p>
-    <a class="button green" href="#commands">How to Use Tip Daddy</a>
+    <a class="button checkered-hover" href="#commands">How to Use Tip Daddy</a>
   </header>
 
   <section class="features">
