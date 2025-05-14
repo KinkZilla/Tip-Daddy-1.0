@@ -1,16 +1,21 @@
 
+//  ████████╗██╗██████╗     ██████╗  █████╗ ██████╗ ██████╗ ██╗   ██╗ 
+//  ╚══██╔══╝██║██╔══██╗    ██╔══██╗██╔══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝
+//     ██║   ██║██████╔╝    ██║  ██║███████║██║  ██║██║  ██║ ╚████╔╝ 
+//     ██║   ██║██╔═══╝     ██║  ██║██╔══██║██║  ██║██║  ██║  ╚██╔╝  
+//     ██║   ██║██║         ██████╔╝██║  ██║██████╔╝██████╔╝   ██║      
+//     ╚═╝   ╚═╝╚═╝         ╚═════╝ ╚═╝  ╚═╝╚═════╝╚═════╝     ╚═╝         
+//                         👑 TIP DADDY v1.0.5 👑
+//                             By: kink_zilla
+
 /**
  * Tip Daddy
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: kink_zilla
  *
  * Comments:
- * If you're branching Tip Daddy, you should reference the original
- * GitHub. "https://kinkzilla.github.io/Tip-Daddy-1.0/"
- * 
- * Please dont name your remix "Tip Daddy X.x.x"
- * label your remix like "Tip Daddy - Remixed" or give it your
- * own awesome title 👌👍
+ * If you're branching Tip Daddy, you'll find useful information on
+ * GitHub. "https://kinkzilla.github.io/Tip-Daddy-1.0/"  👌👍
  */
 
 
@@ -18,7 +23,7 @@
 // 🧠 Tip Daddy Constants & Runtime Lock-In
 
 const APP_NAME = "Tip Daddy 1.0";
-const APP_VERSION = "1.0.4";
+const APP_VERSION = "1.0.5";
 
 $app.name = APP_NAME;
 $app.version = APP_VERSION;
@@ -83,6 +88,11 @@ const PRIZE_ON = $settings.prize_enable;
 const PRIZE_LABEL = $settings.goal_Prize;
 
 /**
+ * This is how often we send the goal prize announcement.
+ */
+const GOAL_PRIZE_TIME = $settings.rolling_notif_1;
+
+/**
  * This is the initial tip value to become the Daddy when nobody has
  * claimed the crown yet.
  */
@@ -106,14 +116,14 @@ const DADDY_COLOR = $settings.daddy_background;
 const TIME_VAR = $settings.time_value; 
 
 /**
- * This is the text color of the tip notices
+ * This is the text color of the thank you notice.
  */
-const MSG_TXT = $settings.text_color; 
+const THANK_YOU_TXT = $settings.thank_you_text; 
 
 /**
- * This is the background color of the tip notices
+ * This is the background color of the thank you notice.
  */
-const MSG_BG = $settings.background_color; 
+const THANK_YOU_BG = $settings.thank_you_background; 
 
 /**
  * This is the background color for the session leaderboard notice
@@ -135,7 +145,7 @@ const SESSION_TIME_VAR = $settings.time_session_leader;
  * This is the threshold that we use to decide when to start sending 
  * 'closeCall' messages.
  */
-const CLOSE_CALL_THRESHOLD = 25;
+const CLOSE_CALL_THRESHOLD = $settings.nearly_There;
 
 /**
  * This is the suspense delay value, models can change how long the 
@@ -158,10 +168,54 @@ const SUBJ_EMOJI = $settings.goal_Emoji;
  * Boolean Value, Returns Yes or No Based on Whether Model
  * has enabled/disabled $settings.use_Tags. 
  */
-const USE_HASHTAGS = $settings.use_Tags
+const USE_HASHTAGS = $settings.use_Tags;
 
+/** 
+ * This is the color of the Announcement text
+ */
+const ANNC_TXT = $settings.txt_Color;
 
+/**
+ * This is the color of the Announcement Background
+ */
+const ANNC_BG = $settings.bkg_Color;
 
+/**
+ * This is the color of the goal prize announcement text
+ */
+const GOAL_PRIZE_TXT = $settings.goal_Prize_Txt;
+
+/**
+ * This is the color of the goal prize announcement background
+ */
+const GOAL_PRIZE_BG = $settings.goal_Prize_BG;
+
+/** This is the color of the Tip Menu text */
+
+const TIP_MENU_TXT = $settings.tipMenu_textColor;
+
+/**
+ * This is the color of the Tip Menu Background
+ */
+const TIP_MENU_BG = $settings.tipMenu_bgColor;
+
+/**
+ * This is the tip menu emoji :)
+ */
+
+const TIP_MENU_EMOJI = $settings.tip_menu_emoji;
+
+/**
+ * This is the text color of the Tip Menu Purchase Alert Notice
+ */
+
+const MENU_ALERT_TXT = $settings.menu_alert_text;
+
+/**
+ * This is the bg color of the Tip Menu Purchase Alert Notice
+ */
+
+const MENU_ALERT_BACK = $settings.menu_alert_bg;
 //----------------------------------------------------------------------
 //                   💥    INITIALIZATION    💥
 //----------------------------------------------------------------------
@@ -172,18 +226,32 @@ const USE_HASHTAGS = $settings.use_Tags
 */
 
 function initializeAppSessionState() {
-  
-  let alreadyInit = false;
-
-  try {
-    alreadyInit = $kv.get('appSessionInitialized') === 'true';
-  } catch (e) {
-    alreadyInit = false;
-  }
-
-  if (!alreadyInit) {
+ 
     // 🎯 Goal state
     
+     
+     try {
+       if (!$kv.get('currentAllTime')) {
+  $kv.set('currentAllTime', 'None - 0 tokens');
+}
+  } catch (e) {
+     console.log(`Failed to set currentAllTime on app start`);
+  }
+   
+     try {
+       if (!$kv.get('currentAllTimeTotal')) {
+  $kv.set('currentAllTimeTotal', 0);
+
+}
+  } catch (e) {
+     console.log(`Failed to set currentAllTimeTotal on app start`);
+  }
+
+
+
+
+
+
      $kv.set('goalCurrent', 0);
      $kv.set('sessionDaddy', 'None'); // Set them as Current Daddy in panel.
      $kv.set('sessionDaddyTotal', 0)
@@ -191,18 +259,30 @@ function initializeAppSessionState() {
      $kv.set('goalMsgSent', false);
      $kv.set('frameNumber', 0);
      $kv.set('panelLocked', false);
+     $kv.set('lastLeaderboardMode', 'AllTime'); // or 'Session' 
+     $kv.set('panelLockedForTimer', false);
+     $kv.remove('minutesLeft');
+     $kv.remove('timerLabel');
+     $kv.set('timerQueue', JSON.stringify([])); // Optional if you want to clear on restart
+     $kv.set('row1_label_value', 'Received / Goal');
+     $kv.set('panel_row1_value', `0/${GOAL_AMOUNT}`);
+     $kv.set('row2_label_value', 'Current Daddy');
+     $kv.set('panel_row2_value', `None`);
+     $kv.set('row3_label_value', 'All Time Daddy 🏆');
+     $kv.set('panel_row3_value', 'None');
+
+     
      $kv.remove('Session_Tippers');
       // Must be a string
     // 🧱 Leaderboard + crown state
      sendMsg('goalUpdateSubject'); // 🎯 Sets subject and THEN appStarted message
      setDefaultPanel();
      $room.reloadPanel();
-     $kv.set('appSessionInitialized', 'true');
+     
 
-    // ✅ Prevent double init during reconnects
     
-  } else { 
-    return;}
+    
+  
 }
 
 //-------------------------------------------------------------------
@@ -240,6 +320,102 @@ function isCrownUnlocked() {
 //---------------------------------------------------------------------- 
 //            🤙🤙      ↓ HELPER FUNCTIONS      🤙🤙
 //----------------------------------------------------------------------
+/**
+ * This is our timer queue function. 
+ */
+function addToTimerQueue(label, duration) {
+  let queue = [];
+
+  // Step 1: Load existing queue safely
+  try {
+    queue = JSON.parse($kv.get('timerQueue') || '[]');
+    if (!Array.isArray(queue)) throw new Error(); // catch corrupted data
+  } catch (e) {
+    queue = [];
+  }
+
+  // Step 2: Push new item
+  queue.push({
+    label: label,
+    duration: Number(duration)
+  });
+
+  // Step 3: Save it back to KV
+  $kv.set('timerQueue', JSON.stringify(queue));
+
+  // Optional: Log to dev console
+  console.log(`📦 Queued timer: ${label} – ${duration} min (Queue size: ${queue.length})`);
+}
+
+
+
+
+/**
+ * This helper will build the session leaderboard then post it to the chat when we call it.
+ */
+function postAlternatingLeader() {
+  let showAllTime = false;
+
+  // 🧠 Check which type we showed last
+  try {
+    showAllTime = $kv.get('lastLeaderboardMode') === 'Session' ? true : false;
+  } catch (e) {
+    showAllTime = false; // default to AllTime if nothing exists
+  }
+
+  let leaderboardText = "------ Top 5 ------\n";
+
+  if (showAllTime) {
+    sendMsg('leaderTitleAllTime'); // 👑 Announce All-Time mode
+
+    let allTimeTippers = [];
+    try {
+      allTimeTippers = JSON.parse($kv.get('AllTime_Tippers')) || [];
+    } catch (e) {
+      allTimeTippers = [];
+    }
+
+    for (let i = 0; i < 5; i++) {
+      if (allTimeTippers[i]) {
+        leaderboardText += `${allTimeTippers[i].username}: ${allTimeTippers[i].tokens} tokens\n`;
+      } else {
+        leaderboardText += "None — 0 tokens\n";
+      }
+    }
+
+    $kv.set('lastLeaderboardMode', 'AllTime');
+
+  } else {
+    sendMsg('leaderTitle'); // 📊 Announce Session mode
+
+    let sessionTippers = [];
+    try {
+      sessionTippers = JSON.parse($kv.get('Session_Tippers')) || [];
+    } catch (e) {
+      sessionTippers = [];
+    }
+
+    sessionTippers.sort((a, b) => b.tokens - a.tokens);
+
+    for (let i = 0; i < 5; i++) {
+      if (sessionTippers[i]) {
+        leaderboardText += `${sessionTippers[i].username}: ${sessionTippers[i].tokens} tokens\n`;
+      } else {
+        leaderboardText += "None — 0 tokens\n";
+      }
+    }
+
+    $kv.set('lastLeaderboardMode', 'Session');
+  }
+
+  // Send the final board to the room
+  $room.sendNotice(leaderboardText.trim(), {
+    color: LEADER_TXT,
+    bgColor: LEADER_BG,
+  });
+}
+
+
 
 
 /**
@@ -356,12 +532,9 @@ function checkGoalPrize(tokens) {
       sendMsg('goalCompleteSubject'); // ✅ Update room subject now that goal is Complete
 
       sendMsg('goalWon'); // 🎯 Public message
+      
 
-      if (PRIZE_ON) {
-        const winner = getCurrentDaddy();
-        const prize = PRIZE_LABEL;
-        sendMsg('prizeWon', winner, prize); // 💝 Private message
-      }
+     
     }
   }
 }
@@ -431,6 +604,13 @@ function getAllTimeDaddyTotal() {
   }
 }
 
+function announceCurrentDaddyNow() {
+  sendMsg('announceCurrentDaddy'); // 💬 Send now for visibility
+  $callback.cancel('repeatDaddyAnnounce'); // ❌ Stop any pending fallback
+  $callback.create('repeatDaddyAnnounce', 60 * TIME_VAR, true); // 🔁 Restart quiet-loop fallback
+}
+
+
 //------------------------------------------------------------------
 //             ⭐📺  BROADCAST PANEL SETTINGS ↓  📺⭐
 //------------------------------------------------------------------
@@ -468,7 +648,8 @@ function buildSessionLeaderboard() {
 
 function buildHeartBar(current, total, slots = 3) {
   const progress = total > 0 ? current / total : 0;
-  const filled = Math.min(Math.round(slots * progress), slots);
+  // Math.floor instead of Math.round - No Rounding we want exact numbers here.
+  const filled = Math.min(Math.floor(slots * progress), slots); 
   const empty = slots - filled;
   return '💙'.repeat(filled) + '🤍'.repeat(empty);
 }
@@ -484,6 +665,7 @@ function padRight(text, totalWidth) {
 
 //----------------------------------------------------------------------
 //
+
 /** 
  *👻 Turns ON the suspense/ loading panel - Overriding the default panel.
  */
@@ -545,7 +727,7 @@ function updateSuspensePanel() {
  */
 function setDefaultPanel() { 
   // ✅ 1.  Get Current Goal Progress -- Just updates the goal in the panel.
-  const goalCurrent = $kv.get('goalCurrent'); // Working Perfectly
+  const goalCurrent = $kv.get('goalCurrent') || 0; // Working Perfectly
 
   // ✅ 2. Define the All Time Daddy for the Panel.
 
@@ -554,8 +736,8 @@ function setDefaultPanel() {
   
   try { 
     // This was set in updateAllTimeTippers
-      allTimeDaddy = $kv.get('currentAllTime');
-      allTimeDaddyTotal = Number($kv.get('currentAllTimeTotal'));
+      allTimeDaddy = $kv.get('currentAllTime') || 'None';
+      allTimeDaddyTotal = Number($kv.get('currentAllTimeTotal') || 0);
     
   } catch (e) {
     allTimeDaddy = 'None';
@@ -587,13 +769,100 @@ try {
 const row1_string = `${padded}${buildHeartBar(goalCurrent, GOAL_AMOUNT)}`;
 const row2_string = `${currentDaddy} — ${currentDaddyTotal} tokens`;
 const row3_string = `${allTimeDaddy} — ${allTimeDaddyTotal} tokens`;
-
+  
+  $kv.set('row1_label_value', 'Received / Goal');
   $kv.set('panel_row1_value', `${row1_string}`);
+  $kv.set('row2_label_value', 'Current Daddy');
   $kv.set('panel_row2_value', `${row2_string}`);
+  $kv.set('row3_label_value', 'All Time Daddy 🏆');
   $kv.set('panel_row3_value', `${row3_string}`);
 
   
 }
+
+function startTimerLoop(label, duration) {
+  $kv.set('panelLockedForTimer', true);
+  $kv.set('minutesLeft', duration);
+  $kv.set('timerLabel', label);
+
+  // Start the timer loop (once per minute)
+  $callback.cancel('timerTick');
+  $callback.create('timerTick', 60, true);
+
+  // Show the first panel frame immediately
+  updateTimerPanel();
+  $room.reloadPanel();
+}
+
+function stopTimerLoop() {
+  $callback.cancel('timerTick');
+  $kv.remove('minutesLeft');
+  $kv.remove('timerLabel');
+  $kv.set('panelLockedForTimer', false);
+
+  stopTimerPanel(); // This handles queue → next item or reset panel
+}
+
+
+function updateTimerPanel() {
+  const label = $kv.get('timerLabel') || '';
+  let minutesLeft = Number($kv.get('minutesLeft') || 0);
+
+  if (minutesLeft <= 0) {
+    stopTimerLoop();
+    return;
+  }
+
+  // Prepare display strings
+  const timeText = `${minutesLeft} minute${minutesLeft === 1 ? '' : 's'}... `;
+
+  // Load next item (if any)
+  let queue = [];
+  try {
+    queue = JSON.parse($kv.get('timerQueue') || '[]');
+    if (!Array.isArray(queue)) throw new Error();
+  } catch (e) {
+    queue = [];
+  }
+
+  const nextItem = queue.length > 0 ? queue[0].label : '—';
+
+  // Update all panel rows
+  $kv.set('row1_label_value', 'Tipped For');
+  $kv.set('panel_row1_value', label);
+  $kv.set('row2_label_value', 'Time Remaining');
+  $kv.set('panel_row2_value', timeText);
+  $kv.set('row3_label_value', 'Next in Queue');
+  $kv.set('panel_row3_value', nextItem);
+  $kv.set('minutesLeft', minutesLeft - 1);
+  $room.reloadPanel();
+}
+
+
+
+function stopTimerPanel() {
+  let queue = [];
+
+  try {
+    queue = JSON.parse($kv.get('timerQueue') || '[]');
+    if (!Array.isArray(queue)) throw new Error();
+  } catch (e) {
+    queue = [];
+  }
+
+  if (queue.length > 0) {
+    const next = queue.shift();
+    $kv.set('timerQueue', JSON.stringify(queue));
+
+    // Start next item
+    startTimerLoop(next.label, next.duration);
+  } else {
+    // Reset panel to default view
+    setDefaultPanel();
+    $room.reloadPanel();
+  }
+}
+
 
 //----------------------------------------------------------------------
 //          🏆🏆    ↓  LEADERBOARD FUNCTIONS  ↓  🏆🏆
@@ -687,9 +956,104 @@ function updateSessionTippers(username, tokens) {
   $kv.set('Session_Tippers', JSON.stringify(sessionTippers));
 }
 
+/**
+ * This function creates a Tip Menu array that will be defined by the model.
+ */
+
+function updateTipMenu(item, price, username, timer = null) {
+
+  let menu = [];
+
+  // STEP 1: Load the current menu
+  try {
+    const raw = $kv.get('tipMenu') || '[]';
+    menu = JSON.parse(raw);
+  } catch (e) {
+    menu = [];
+  }
+
+  // STEP 2: Check for duplicate price
+  const priceExists = menu.some(entry => Number(entry.price) === Number(price));
+  if (priceExists) {
+    sendMsg('duplicateTipMenuPrice', $user.username); // ✅ FIXED key
+    return;
+  }
+
+  // STEP 3: Check if item exists (case-insensitive)
+  const existing = menu.find(entry => entry.item.toLowerCase() === item.toLowerCase());
+
+  if (existing) {
+    existing.item = item;
+    existing.price = Number(price);
+  } else {
+menu.push({
+  item: item,
+  price: Number(price),
+  ...(timer && { timer: Number(timer) }) // ✅ only adds if timer is provided
+});
+
+
+    // 🧠 If this was the first item, send onboarding message
+    if (menu.length === 1) {
+      
+      $callback.cancel('tipMenuAnnc');
+      $callback.create('tipMenuAnnc', 60 * $settings.tip_menu_time, true);
+    }
+  }
+
+  // STEP 4: Sort and save
+  menu.sort((a, b) => a.price - b.price);
+  $kv.set('tipMenu', JSON.stringify(menu));
+
+  // ✅ STEP 5: Confirm success
+  sendMsg('tipMenuUpdated', $user.username, item, price);
+}
+
+
+
+
 //---------------------------------------------------------------------
 //       👑👑👑      CROWN/DETHRONE LOGIC     👑👑👑
 //------------------------------------------------------------------------
+
+function handleCrownRevealDuringTimer(username) {
+  const leaderboard = buildSessionLeaderboard();
+
+  if (leaderboard.length === 0) return;
+
+  const userEntry = leaderboard.find(entry => entry.username === username);
+  if (!userEntry) return;
+
+  const sessionTotal = userEntry.tokens;
+  const currentTopUser = leaderboard[0].username;
+
+  if (!isCrownUnlocked()) {
+    if (sessionTotal >= $settings.init_Tip_Value && username === currentTopUser) {
+      $kv.set('crownUnlocked', 'true');
+      $kv.set('sessionDaddy', username);
+      $kv.set('sessionDaddyTotal', sessionTotal);
+
+      $callback.cancel('introDaddyPrompt');
+      $callback.cancel('repeatDaddyAnnounce');
+      $callback.create('repeatDaddyAnnounce', 60 * TIME_VAR, true);
+
+      sendMsg('firstDaddyCrowned', username);
+
+         if (isGoalComplete()) {
+   if (PRIZE_ON) {
+        const winner = getCurrentDaddy();
+        const prize = PRIZE_LABEL;
+        sendMsg('prizeWon', winner, prize); // 💝 Private message
+        $callback.cancel('AnnouncegoalPrize');
+        }
+}
+
+      // No suspense loop
+    }
+  }
+}
+
+
 
 /**
  * 🧠 handleCrownReveal
@@ -746,6 +1110,63 @@ function handleCrownReveal(username) {
   } 
 }
 
+function handleCrownTransitionDuringTimer(username) {
+  const leaderboard = buildSessionLeaderboard();
+  if (leaderboard.length === 0) return;
+
+  const userEntry = leaderboard.find(entry => entry.username === username);
+  if (!userEntry) return;
+
+  const sessionTotal = userEntry.tokens;
+  const currentTopUser = leaderboard[0].username;
+
+  if (!isCrownUnlocked()) return;
+
+  const previousDaddy = $kv.get('sessionDaddy') || 'None';
+  const newDaddy = leaderboard[0].username;
+  const newDaddyTokens = leaderboard[0].tokens;
+
+  if (previousDaddy !== newDaddy && previousDaddy !== 'None') {
+    // Crown is changing hands
+    $kv.set('new_Daddy', newDaddy);
+    $kv.set('new_Daddy_Tokens', newDaddyTokens);
+
+    $kv.set('sessionDaddy', newDaddy);
+    $kv.set('sessionDaddyTotal', newDaddyTokens);
+
+    sendMsg('deThronedDaddy', previousDaddy, newDaddy);
+    sendMsg('isDaddy', newDaddy, newDaddyTokens);
+
+
+     if (isGoalComplete()) {
+   if (PRIZE_ON) {
+        const winner = getCurrentDaddy();
+        const prize = PRIZE_LABEL;
+        sendMsg('prizeWon', winner, prize); // 💝 Private message
+        $callback.cancel('AnnouncegoalPrize');
+        }
+}
+
+    try { $kv.remove('new_Daddy'); } catch (e) {
+      //noempty
+    }
+    try { $kv.remove('new_Daddy_Tokens'); } catch (e) {
+      //noempty
+    }
+
+  } else if (previousDaddy === newDaddy && previousDaddy !== 'None' && username === newDaddy) {
+    try {
+      $kv.set('sessionDaddyTotal', newDaddyTokens);
+    } catch (e) {
+      //noempty
+    }
+
+    sendMsg('thankYouDaddy', newDaddy);
+    announceCurrentDaddyNow();
+  }
+}
+
+
 /**
  * 👑 handleCrownTransition
  * Called after a user tips. Checks if the crown has changed hands.
@@ -780,7 +1201,7 @@ function handleCrownTransition(username) {
   
   // Notify user they're close to stealing the crown!
   sendMsg('closeCall', username, dethroneGap);
- 
+  
   // Also send a dethrone warning to the current Daddy, "you're gonna lose your crown bro!"
   // Use a try/catch. Just in case the poor guy left the room for some reason. (He's buying more tokens, duh)
   try {
@@ -815,13 +1236,11 @@ function handleCrownTransition(username) {
          // startSuspenseLoop(1); // update every 0.5 seconds
 
           
-          sendMsg('deThronedDaddy', previousDaddy, newDaddy);
+    sendMsg('deThronedDaddy', previousDaddy, newDaddy);
          
           
-
-    
-  // 🕑 10-second suspense delay. We cancel any old revealNewDaddy callbacks for perfect timing
-  // We'll take care of the rest of this function in the revealNewDaddy Callback.
+// 🕑 10-second suspense delay. We cancel any old revealNewDaddy callbacks for perfect timing
+// We'll take care of the rest of this function in the revealNewDaddy Callback.
   // Canceling/Starting like this should handle Tip Battles quite well.
     startSuspenseLoop();
     $callback.cancel('revealNewDaddy');
@@ -832,14 +1251,31 @@ function handleCrownTransition(username) {
     
     } else if (previousDaddy === newDaddy && previousDaddy !== 'None' && user === newDaddy ) {
       
+      
+      // Update session total for current Daddy so dethrone cost stays accurate
+ // ✅ Update dethrone cost using the Session_Tippers_<user> value
+  try {
+    const currentTotal = newDaddyTokens || 0;
+    $kv.set('sessionDaddyTotal', currentTotal);
+  } catch (e) {
+    console.log('⚠️ Failed to update sessionDaddyTotal for current Daddy');
+  }
+
+
+      
   // They're already Daddy and tipped again
 
       sendMsg('thankYouDaddy', newDaddy);
+      announceCurrentDaddyNow();
 
+// We gated this function so Daddy doesnt cancel the crowning
+// ceremony unkowningly when he tips more tokens. ↓
+  if (!$kv.get('panelLocked')) {
       setDefaultPanel();
       $room.reloadPanel(); // Optional: Force full refresh
      }
    }
+  }
 }   
 
 
@@ -855,21 +1291,6 @@ function handleCrownTransition(username) {
  *    a nifty unicode map so we can send bolded messages. 
  * 
  */
-function toUnicodeBold(str) {
-  const boldMap = {
-    A: '𝗔', B: '𝗕', C: '𝗖', D: '𝗗', E: '𝗘', F: '𝗙', G: '𝗚', H: '𝗛', I: '𝗜', J: '𝗝',
-    K: '𝗞', L: '𝗟', M: '𝗠', N: '𝗡', O: '𝗢', P: '𝗣', Q: '𝗤', R: '𝗥', S: '𝗦', T: '𝗧',
-    U: '𝗨', V: '𝗩', W: '𝗪', X: '𝗫', Y: '𝗬', Z: '𝗭',
-    a: '𝗮', b: '𝗯', c: '𝗰', d: '𝗱', e: '𝗲', f: '𝗳', g: '𝗴', h: '𝗵', i: '𝗶', j: '𝗷',
-    k: '𝗸', l: '𝗹', m: '𝗺', n: '𝗻', o: '𝗼', p: '𝗽', q: '𝗾', r: '𝗿', s: '𝘀', t: '𝘁',
-    u: '𝘂', v: '𝘃', w: '𝘄', x: '𝘅', y: '𝘆', z: '𝘇',
-    0: '𝟬', 1: '𝟭', 2: '𝟮', 3: '𝟯', 4: '𝟰', 5: '𝟱', 6: '𝟲', 7: '𝟳', 8: '𝟴', 9: '𝟵'
-  };
-
-  return str.split('').map(c => boldMap[c] || c).join('');
-}
-
-
 
 
 const messageList = {
@@ -880,111 +1301,267 @@ const messageList = {
     log: true
   },
   appStarted: {
-    text: '🚀 Tip Daddy has started! The leaderboard is live, and the crown is up for grabs. Tip to climb to the top!',
+    text: '🎬 Tip Daddy has started! The leaderboard is live, and the crown is up for grabs. Tip to climb to the top!',
+    color: "#ffffff", // White text
+    bgColor: "#3ea308", // Green 
     log: true,
     
   },
    
+  // Tip Menu — General Usage & Onboarding
+tipMenuWelcome: {
+  text: ":banana Tip Menu is enabled! Use /setmenu item price to add your first item.\nExample: /setmenu 🍑 Flash This Cute Lil Butt 200   Type /help for more examples and a list of commands",
+  private: true
+},
+tipMenuDisabled: {
+  text: "⚠️ Tip Menu is currently disabled. You can enable it in the app settings to start adding items.",
+  private: true
+},
+emptyTipMenu: {
+  text: `📋 The tip menu hasn’t been set yet. Use /setmenu[space]⚡item goes here[space]price to add items.`,
+  color: "#000000", // White text
+  bgColor: "#FCEB30", // Alert Yellow
+  log: true
+},
+
+// /setmenu command
+invalidSetMenuUsage: {
+  text: "⚠️ Invalid format. Use: /setmenu item price\nExample: /setmenu 🍑 Flash elbow 200\nUse /help for more info.",
+  private: true
+},
+duplicateTipMenuPrice: {
+  text: "⚠️ You already have a tip menu item with that price. Use a different amount.",
+  private: true
+},
+tipMenuUpdated: {
+  text: (username, item, price) => `✅ Tip menu updated: "${item}" – ${price} tokens.`,
+  private: true
+},
+tipMenuMatch: {
+  text: (username, item, price) => `🎁 ${username} tipped ${price} tokens for: ${item}`,
+  log: true,
+  color: `${MENU_ALERT_TXT}`, // custom
+  bgColor: `${MENU_ALERT_BACK}` // custom
+  
+},
+timerQueuedPublic: {
+  text: (username, label) => `📣 ${label} has been added to the queue! It will begin right after the current countdown.`,
+  log: true
+},
+
+helpMsg: {
+  text: "Help \n This tip menu is a little different than others. If you're having issues please read this carefully. \n This menu will automatically sort the added items by price - Low to High.\n You will update this Tip Menu with chat commands, so you'll need to type one of the following commands into your chat room. \n /menu - Shows the Menu, can be used by any users. \n /setmenu - This command will set the menu items and prices, it is a broadcaster only command. Only a broadcaster or a Mod can use it. \n /clearmenu - This will clear the menu of all items permanently. Also a broadcaster only command. \n /removeitem - This will remove individual items from the Tip Menu. Broadcaster only. \n \n IMPORTANT NOTES: \n\n The /removeitem and /setmenu commands use the same principles.\n First you'll type /removeitem or /setmenu, then you'll push the spacebar, and enter in the item. For example: '5 Spanks'. Then you'll push the spacebar again, and type the price of this item. Example: 20  \n So all together we have /setmenu [SPACE] 5 spanks [SPACE] 20 \n It should look something like this:\n/setmenu 5 spanks 20 \n \n Push enter and you should see:\n ✅ Tip menu updated: '5 spanks' – 20 tokens. \n Now you can view the updated menu by typing the /menu command and pushing enter again to see the new item we just made. \n\n You can now also add an optional timer to the menu item by adding an extra number to the end that represents the desired timer length in minutes. \n For example: /setmenu Sexy dance moves :) 100 5 - The extra '5' at the end will give us a 5 minute timer in the broadcast panel whenever someone tips 100 for sexy dance moves. Do it like /setmenu[space]Sexy Dance Moves[space]Price[space]timerlength\n\n To remove that item from the Tip Menu simply type:\n /removeitem 5 spanks \n Then push enter. \n 🗑️ Removed '5 Spanks' from the tip menu. \n The /removeitem command isn't case sensitive, but you will need to match the text exactly. It might be easier to copy/paste the item you want to remove like /removeitem[space]PASTE\n If you get too confused you can just type /clearmenu and start completely over. If you absolutely need help, tip one token to kink_zilla and tell me what you needed help with in the tip message, or try sending me a dm.",
+  private: true
+},
+
+// /clearmenu command
+clearTipMenuSuccess: {
+  text: "🧹 Tip menu cleared successfully.",
+  private: true
+},
+clearTipMenuError: {
+  text: "⚠️ Failed to clear the tip menu. Try again.",
+  private: true
+},
+
+// /removeitem command
+invalidRemoveItemUsage: {
+  text: "⚠️ Invalid format. Use: /removeitem item name\nExample: /removeitem Flash elbow",
+  private: true
+},
+removeItemNotFound: {
+  text: (username, item) => `❌ Could not find "${item}" in the tip menu.`,
+  private: true
+},
+removeItemSuccess: {
+  text: (username, item) => `🗑️ Removed "${item}" from the tip menu.`,
+  private: true
+},
+
+
+
+
     setAllTimeSuccess: {
-    text: (user, target, tokens) => `✅ Set ${target} to ${tokens} tokens on the All-Time leaderboard.`,
+    text: (user, target, tokens) => `👍 Set ${target.toUpperCase()} to ${tokens} tokens on the All-Time leaderboard.`,
+    color: "#ffffff", // White text
+    bgColor: "#3ea308", // Green 
     private: true
   },
 
   setAllTimeInvalid: {
     text: (user) => `⚠️ Invalid token amount. Use: /setalltime username tokens`,
+    color: "#ffffff", // White text
+    bgColor: "#eb8407", // Alert orange 
     private: true
   },
 
   setAllTimeFormatError: {
     text: (user) => `⚠️ Incorrect format. Use: /setalltime username tokens`,
+    color: "#ffffff", // White text
+    bgColor: "#eb8407", // Alert orange 
     private: true
   },
 
   clearAllTimeSuccess: {
-    text: (user) => '🧹 All-Time leaderboard has been cleared.',
+    text: (user) => '👍 All-Time leaderboard has been cleared.',
+    color: "#ffffff", // White text
+    bgColor: "#3ea308", // Green 
+    private: true
+  },
+  clearAllTimeInvalid: {
+    text: (user) => '⚠️ You may not alter the panel during the crowning process...',
+    color: "#ffffff", // White text
+    bgColor: "#eb8407", // Alert orange 
     private: true
   },
   appResetComplete: {
   text: '🔄 Tip Daddy has been restarted!',
-  color: "#ffffff",
-  bgColor: "#22c55e",
+  color: "#ffffff", // White text
+  bgColor: "#3ea308", // Green 
   private: false,
   log: true,
   },
     appEnded: {
     text: '👋 Session ended...',
+    color: "#ffffff", // White text
+    bgColor: "#3ea308", // Green 
     log: true,
     
   },
 
   // CROWN / GAME MESSAGES
-  firstDaddyCrowned: {
-  text: (username) => `👑 The crown has officially been claimed. ${username} is now ${getModelUsername()}'s Daddy.`,
-  color: "#ffffff",
-  bgColor: "#4f46e5"
+firstDaddyCrowned: {
+  text: (username) => {
+    const model = getModelUsername();
+    return `👑 The crown has officially been claimed. ${username.toUpperCase()} is now ${model}'s Daddy.`;
+  },
+  color: "#ffffff", // White Text
+  bgColor: "#3EA308", // Green 
 },
-  closeCall: {
-    text: (user, tokensNeeded) => `😱 ${toUnicodeBold(user)} is just ${tokensNeeded} tokens away from stealing the crown!`,
-    color: "#ffffff",
-    bgColor: "#4f46e5",
-    private: true
+
+closeCall: {
+  text: (user, tokensNeeded) => {
+    const options = [
+      `😱 You're just ${tokensNeeded} tokens away from claiming the crown!`,
+      `👑 Only ${tokensNeeded} more tokens and the crown is yours!`,
+      `🔥 ${tokensNeeded} tokens stand between you and Daddy status.`,
+      `⚔️ So close! Tip ${tokensNeeded} more tokens to steal the crown.`,
+      `💣 You nearly have it! Just ${tokensNeeded} more tokens to take control.`,
+      `🫣 That was close! You're ${tokensNeeded} tokens from becoming Daddy.`,
+      `💋 One more push — ${tokensNeeded} tokens and the crown is yours.`,
+      `👀 Don’t stop now — just ${tokensNeeded} tokens left to dethrone Daddy.`,
+    ];
+    return options[Math.floor(Math.random() * options.length)];
   },
+    color: `${ANNC_TXT}`, // Custom: Default is White
+    bgColor: `${ANNC_BG}`, // Custom: Default is Royal Blue
+  private: true,
+  },
+
     daddyDethroneWarning: {
-    text: (challenger, tokensBehind) => `⚠️ ${challenger} is only ${tokensBehind} tokens from stealing your crown. Protect it or lose it!`,
-    color: "#000000",
-    bgColor: "#f97316",
+    text: (challenger, tokensBehind) => `⚠️ ${challenger} Another user is only ${tokensBehind} tokens from stealing your crown. Protect it or lose it!`,
+    color: "#ffffff", // White text
+    bgColor: "#f94716", // Alert Red
     private: true
   },
+
+claimingCrown: {
+  text: () => {
+    const options = [
+      '⚔️ A challenger approaches... The throne is being claimed!',
+      '👑 A new ruler rises to claim the throne!',
+      '🛡️ The kingdom stirs — The crown is being claimed!',
+      '🛡️ Someone\'s feeling bold... They\'ve just claimed the crown!',
+      '🏹 The battle has begun... The crown is being claimed!',
+      '🚨 Game on! Someone just stepped up to claim the crown!',
+      '👀 A new Daddy approaches.',
+      '🏰 A new Daddy is claiming the throne.',
+    ];
+    return options[Math.floor(Math.random() * options.length)];
+  },
+  color: "#ffffff", // white Text
+  bgColor: "#000000", // Black
+},
+
  
 deThronedDaddy: {
-  text: (previousDaddy, newDaddy) => `👀 ${previousDaddy} was dethroned by ${newDaddy}! The crown is changing hands.`,
-  color: "#ffffff",
-  bgColor: "#4f46e5"
-},
+  text: (previousDaddy, newDaddy) => {
+    const options = [
+      `👀 ${previousDaddy} was dethroned by ${newDaddy}! The crown is changing hands.`,
+      `💔 ${previousDaddy}, your reign has ended. ${newDaddy} is being crowned.`,
+      `😈 ${newDaddy} just stole the crown from ${previousDaddy}. Let the crowning commence!`,
+      `⚔️ A fierce battle ends with ${newDaddy} toppling ${previousDaddy} for the crown!`,
+      `👑 ${previousDaddy} has been overthrown — ${newDaddy} is being crowned!`,
+      `🪓 Off with their crown! ${newDaddy} just dethroned ${previousDaddy}.`,
+      `🔥 ${previousDaddy} couldn't hold it — ${newDaddy} is being crowned.`,
+    ];
+    return options[Math.floor(Math.random() * options.length)];
+  },
+  color: "#ffffff", // white Text
+  bgColor: "#000000", // Black
+  },
+
 
   isDaddy: {
-    text: (username) => `${username} is ${getModelUsername()}'s new Daddy! 👑`,
-    color: "#ffffff",
-    bgColor: "#4f46e5"
+  text: (username) => `${username.toUpperCase()} is ${getModelUsername()}'s new Daddy! 👑`,
+
+  color: "#ffffff", // White Text
+  bgColor: "#3EA308", // Green 
   },
 
-    prizeWon: {
-    text: (username, prize) => `🎁 ${username} won the prize! 💝 Prize: ${prize}`,
-    color: "#ffffff",
-    bgColor: "#4f46e5",
-    private: true
+prizeWon: {
+  text: (username, prize) => {
+    const options = [
+      `💋 Mmmmm, ${username.toUpperCase()} You just earned: ${prize.toUpperCase()}. I hope you're ready for me 💄`,
+      `💝 All yours, ${username.toUpperCase()}... You won the prize. Come claim your ${prize.toUpperCase()}`,
+      `🎀 Well, well, well... ${username.toUpperCase()} You're my favorite Daddy! Your reward? ${prize.toUpperCase()} 😘`,
+      `🎁 Congratulations, Daddy. ${prize.toUpperCase()} is all yours. I can't wait 😘💋`,
+      `💎 ${username.toUpperCase()} You didn’t just tip... You dominated. ${prize.toUpperCase()} - Just for you Daddy.`,
+      `🔥 That was hot ${username.toUpperCase()} Let's make it hotter. Your prize is: ${prize.toUpperCase()}`,
+      `👑 ${username.toUpperCase()} you're not just Daddy - you're my King! Your prize awaits: ${prize.toUpperCase()} 💝`,
+      `🥵 Oh my... You did it Daddy! ${prize.toUpperCase()} is yours, ${username.toUpperCase()}. I hope you're ready for it...`,
+      `💌 That tip was everything Daddy! ${username.toUpperCase()}, you’ve earned: ${prize.toUpperCase()}`,
+      `🎉 Prize alert! ${username.toUpperCase()}, you made it happen. Here’s Daddy's reward: ${prize.toUpperCase()}`
+    ];
+    return options[Math.floor(Math.random() * options.length)];
   },
+  private: true,
+  color: "#000000", // Black text
+  bgColor: "#facc15", // Gold
+},
+
     thankYouDaddy: {
     text: () => {
-    const msgText = $settings.thank_You_Daddy
-    return `☁️ ${msgText} ☁️`
+    const msgText = $settings.thank_You_Daddy 
+    const tokens = $tip.tokens
+    return `☁️ ${msgText} ☁️\n+ ${tokens} tokens`
     },
 
-    color: "#ffffff",
-    bgColor: "#4f46e5",
+    color: `${THANK_YOU_TXT}`,  // Custom: Default is White
+    bgColor: `${THANK_YOU_BG}`, // Custom: Default is Hot Pink
     private: true
   },
   announceCurrentDaddy: {
   text: () => {
     const daddy = getCurrentDaddy();
     const name = getModelUsername();
-    const cost = getDethroneCost();
-    return `👑 ${daddy} is currently ${name}'s Daddy. You must tip at least ${cost} total tokens in this session to steal the crown.`;
+    return `👑 ${daddy.toUpperCase()} is ${name}'s Daddy. You must tip at least ${getDethroneCost()} total tokens during this session to take the crown.`;
   },
-  color: "#ffffff",
-  bgColor: "#4f46e5",
+    color: `${ANNC_TXT}`, // Custom: Default is White
+    bgColor: `${ANNC_BG}`, // Custom: Default is Royal Blue
   callback: true
 },
 tipToBecomeDaddy: {
   text: () => {
     const amount = DADDY_PRICE;
     const name = getModelUsername();
-    return `👑 Tip ${amount} tokens to become ${name}'s Daddy!`;
+    return `👑 You must tip ${amount} tokens or more to become ${name}'s Daddy!`;
   },
-  color: "#ffffff",
-  bgColor: "#4f46e5",
+    color: `${ANNC_TXT}`, // Custom: Default is White
+    bgColor: `${ANNC_BG}`,
   callback: true,
 },
+
 goalUpdateSubject: {
   type: 'subject',
   text: () => {
@@ -1001,11 +1578,39 @@ goalUpdateSubject: {
     text: () => '🎯 GOAL COMPLETED! Thank you to all the amazing tippers 💖',
     log: true,
   },
+    leaderTitle: {
+    text: `📈 Session Leaderboard - Type /leader`,
+    color: "#ffffff", // White text
+    bgColor: "#000000", // Green 
+    },
+    
+    leaderTitleAllTime: {
+  text: "🏆  All-Time Leaderboard - ⚡ Type /alltime",
+  color: "#ffffff",
+  bgColor: `${LEADER_BG}`,
+},
+    tipMenuTitle: {
+      text: () => { 
+      const TIP_MENU_GIF = $settings.menu_gif;  
+      return  `       ${TIP_MENU_EMOJI} Tip Menu ${TIP_MENU_EMOJI} ${TIP_MENU_GIF}`;
+
+      },
+      color: `${TIP_MENU_TXT}`,
+      bgColor: `${TIP_MENU_BG}`,
+      
+    },
+
+    goalPrize: {
+    text: `If you are the Daddy when the goal hits, you win a special prize. 💝 \n 🏆  Prize: ${PRIZE_LABEL}`,
+    color: `${GOAL_PRIZE_TXT}`, // Custom: Default is white
+    bgColor: `${GOAL_PRIZE_BG}`, // Custom: Default is Green
+    },
+
 
     goalWon: {
-    text: "🎯 Goal complete!",
-    color: "#000000",
-    bgColor: "#facc15"
+    text: `🎯 Goal Reached! Goal is: ${GOAL_LABEL}`,
+    color: "#ffffff", // White text
+    bgColor: "#3ea308", // Green 
     }
   };
 
@@ -1026,11 +1631,13 @@ function sendMsg(key, ...args) {
   }
 
   // 🧠 Evaluate text if it's a function, or use as-is
-  let text = typeof msg.text === 'function' ? msg.text(...args) : msg.text;
+
 
   // 🎯 Handle subject messages first (overrides all other types)
 if (msg.type === 'subject') {
+  const text = typeof msg.text === 'function' ? msg.text(...args) : msg.text;
   $room.setSubject(text);
+  
 
   if (msg.log === true) {
     console.log(`[sendMsg] Subject set to: ${text}`);
@@ -1052,6 +1659,8 @@ if (msg.type === 'subject') {
 
   // 🔁 Define what actually sends the message
   const sendNow = () => {
+  const text = typeof msg.text === 'function' ? msg.text(...args) : msg.text;
+
     $room.sendNotice(text, options);
     if (msg.log === true) {
       console.log(`[sendMsg] Message sent:`, { key, text, options });
@@ -1142,12 +1751,20 @@ function onStop() {
   $kv.set('crownUnlocked', false);
 
   // ✅ 3. Reset goal progress
+  $kv.remove('lastLeaderboardMode');
   $kv.remove('goalCurrent');
   $kv.set('goalCurrent', 0);
   $kv.set('goalMsgSent', false)
   $kv.set('sessionDaddy', 'None')
   $kv.set('sessionDaddyTotal', 0)
-  $kv.set('appSessionInitialized', false);
+
+$callback.cancel('timerTick');
+$kv.set('panelLockedForTimer', false);
+$kv.remove('minutesLeft');
+$kv.remove('timerLabel');
+$kv.set('timerQueue', JSON.stringify([])); 
+
+ 
 
 
 
@@ -1157,6 +1774,7 @@ function onStop() {
   $callback.cancel('repeatDaddyAnnounce');
   $callback.cancel('revealCrown');
   $callback.cancel('revealNewDaddy');
+  $callback.cancel('sessionLead');
   setDefaultPanel();
   $room.reloadPanel();
   
