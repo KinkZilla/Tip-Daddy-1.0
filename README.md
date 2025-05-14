@@ -1,87 +1,99 @@
-# Tip Daddy 1.0
+# 👑 Tip Daddy v1.0.5
 
-👑 A Chaturbate application that tracks top tippers, displays real-time leaderboards, 
-and rewards the reigning Daddy with a custom prize. Built for fun, flair, and full-room hype.
+A Chaturbate application that tracks top tippers, displays real-time leaderboards, powers interactive tip menus (with timers!), and rewards the reigning Daddy with a custom prize. Built for fun, flair, and full-room hype — with style.
 
 ---
 
 ## 🚀 Features
 
-- Tracks both **Session** and **All-Time** top tippers
-- Real-time tip **goal progress bar overlay**
-- Custom prize alerts sent to the top tipper when the goal is reached
-- Clean admin interface with (almost)fully customizable settings
-- Chat transforms (crown emoji, background color) for the current Daddy
-- Panel display showing goal progress and top Daddies
+- 🎯 Tracks both **Session** and **All-Time** top tippers  
+- 📈 Real-time **tip goal progress** with animated panel display  
+- 🎁 **Prize alerts** for top tippers when the goal is completed  
+- 👑 Live **Crown System** with dethroning logic and chat effects  
+- 📋 Dynamic **Tip Menu System** with optional countdown timers  
+- 🔁 **Queueing** for timed tip menu items  
+- 💬 Custom **message styling** (colors, emojis, backgrounds)  
+- 🧠 Crash-proof **KV storage logic**  
+- 🎨 Customizable through **Dev Portal JSON settings**  
+- 🖥️ Full broadcast panel updates — goal, session & all-time Daddies
 
 ---
 
-## 🛠 Admin Commands
+## 💬 Commands
 
-| Command | Function |
-|--------|----------|
-| `/leader` | Show session leaderboard |
-| `/alltime` | Show all-time leaderboard |
-| `/setalltime username tokens` | Manually update a user’s all-time tokens |
-| `/clearalltime` | Clear the all-time leaderboard |
+| Command                           | Function                                                            |
+|----------------------------------|---------------------------------------------------------------------|
+| `/leader`                        | Show the current session leaderboard                               |
+| `/alltime`                       | Show the all-time leaderboard                                      |
+| `/setalltime username tokens`    | Manually set a user's all-time tip record                          |
+| `/clearalltime`                 | Clear the all-time leaderboard (⚠️ irreversible)                   |
+| `/reset`                         | Reset session and crown logic without affecting all-time data      |
+| `/setmenu Item Price`            | Add a tip menu item (no timer)                                     |
+| `/setmenu Item Price Minutes`    | Add a timed tip menu item with countdown display                   |
+| `/removeitem Item`              | Remove a tip menu item by name (case-insensitive)                  |
+| `/clearmenu`                     | Clear all tip menu items                                           |
+| `/menu`                          | Post the current tip menu in chat                                  |
 
 ---
 
 ## ⚙️ Settings
 
-The app uses a flexible JSON settings panel (defined in `settings.json`) for:
+Tip Daddy uses a flexible JSON-powered settings panel inside the [Chaturbate Dev Portal](https://chaturbate.com/apps/). Key setting categories:
 
-- Goal and prize configuration
-- Color themes for messages and leaderboards
-- Update intervals and message frequency
-- Optional alternate usernames and visuals
+- Goal & Prize Settings  
+- Tip Menu Colors & Emojis  
+- Message Display Themes  
+- Timing Intervals (for callbacks, repeaters)  
+- Alternate usernames and tags  
+- Display toggles for menu / leaderboard visibility  
 
-These are managed via the Chaturbate Dev Portal "Settings" tab.
-If you're compiling, you'll need to define each one in the dev portal as
-a new setting, (or just copy Tip Daddy 1.0 to your apps.)
+Need help copying settings? Just clone from the public Tip Daddy listing or check out `settings.json`.
+
 ---
 
 ## 📦 Files
 
-- `Shared Code.js`: Core logic and overlay interaction
-- `Tip Received.js`: Handles tip events, emits overlay updates
-- `App Start/Stop.js`: Bootstraps and cleans up
-- `Callback.js`: Timed announcements and effects
-- `Broadcast Panel Update.js`: Sets display under stream
-- `Chat Message.js`: Handles /leader and /alltime commands
-- `Chat Message Transform.js`: Adds crown & flair
-- `TipDaddy_Wiki.md`: Dev documentation & architecture
-- `settings.json`: Settings panel structure for CB Dev Portal
-- `ReadMe.txt`: Tab order and unused Dev Portal references
+- `Shared Code.js` – Core logic, panel updates, crown engine  
+- `Tip Received.js` – Tip handler, leaderboard logic, crown/timer triggers  
+- `App Start/Stop.js` – Initialization and session cleanup  
+- `Callback.js` – Repeaters and suspense/delay management  
+- `Broadcast Panel Update.js` – Real-time UI updates  
+- `Chat Message.js` – Slash commands (/menu, /alltime, etc)  
+- `Chat Message Transform.js` – Crown emoji, Daddy flair in chat  
+- `settings.json` – Developer panel configuration  
+- `TipDaddy_Wiki.md` – Architecture & implementation notes  
+- `ReadMe.md` – You are here.
 
 ---
 
-## 🔒 License
+## 📝 Changelog
 
-MIT License — © 2025 KinkZilla
+**v1.0.5 Highlights:**
 
-> Use it, remix it, crown yourself with it. Just give credit. 😉
+- ⏱ Timed Tip Menu Items  
+- 🔁 Auto-Queue System  
+- 📋 `/menu` command  
+- 🧠 Safe KV logic with `try/catch`  
+- 🎨 Dynamic label switching on broadcast panel  
+- 💖 GitHub Pages doc site with full user-facing guide
+
+➡️ [Full v1.0.5 Changelog](./TipDaddy_v1.0.5_Changelog.md)
 
 ---
-
-## Changelog
-
-### Tip Daddy v1.0.4 Update
-- Shared Code was completely rebuilt and replaced in version 1.0.4
-- Legacy logic (setDaddyCurrent, currentDaddyIs, etc.) has been deprecated
-
-
-
-
-View the full changelog [here](./CHANGELOG.md).
-
 
 ## 💬 Support & Collaboration
 
-Built with love, sass, and Nova — My AI dev sidekick.  
-Want to collab, remix, or feature this? [Let’s talk](https://chaturbate.com/kink_zilla). 😉
+Built with love, sass, and **Nova** — my AI sidekick.  
+Want to remix it? Feature it? Cry about it with eyeliner on?  
+Let’s collab.
 
+---
 
-## Keywords (for search)
+## 🔍 Keywords (for search)
 
-Chaturbate tip leaderboard, token goal tracker, live tip ranking, CB app goal system, Chaturbate overlay, top tipper display, CB token prize game, Chaturbate goal app, engagement tipping app, Tip Daddy 1.0, 
+Chaturbate leaderboard · token goal tracker · CB tipping app · Chaturbate tip menu · top tipper panel · overlay prize game · interactive goal app · live tip display · Nova-powered apps · Tip Daddy
+
+---
+
+© 2025 Kink_Zilla.  
+Licensed under the MIT License — use it, remix it, crown yourself with it. Just give credit 😉
