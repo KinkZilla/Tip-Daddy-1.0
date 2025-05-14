@@ -2,8 +2,132 @@
 
 const msg = $message.body.toLowerCase().trim();
 
+// Set Tip Menu 
+
+if ($message.body.includes('/help') && ($user.isMod || $user.username === $room.owner)) {
+ sendMsg('helpMsg', $user.username);
+}
+
+if ($message.body.includes('/setmenu') && ($user.isMod || $user.username === $room.owner)) {
+  if ($settings.tip_menu === true) {
+    const args = $message.body.split(' ').slice(1); // Remove '/setmenu'
+
+    if (args.length < 2) {
+      sendMsg('invalidSetMenuUsage', $user.username);
+    } else {
+      const last = args[args.length - 1];
+      const secondLast = args[args.length - 2];
+
+      let price, timer, item;
+
+      if (!isNaN(last) && !isNaN(secondLast)) {
+        // Format: itemName price timer
+        price = Number(secondLast);
+        timer = Number(last);
+        item = args.slice(0, -2).join(' ');
+      } else if (!isNaN(last)) {
+        // Format: itemName price
+        price = Number(last);
+        timer = null;
+        item = args.slice(0, -1).join(' ');
+      } else {
+        sendMsg('invalidSetMenuUsage', $user.username);
+        //do nothing
+      }
+
+      if (price <= 0 || (timer !== null && timer <= 0)) {
+        sendMsg('invalidSetMenuUsage', $user.username);
+      } else {
+        updateTipMenu(item, price, $user.username, timer);
+      }
+    }
+  }
+}
+
+
+// Remove Tip Menu Item command
+
+if ($message.body.includes('/removeitem') && ($user.isMod || $user.username === $room.owner)) {
+  if ($settings.tip_menu === true) {
+    const itemToRemove = $message.body.split(' ').slice(1).join(' ').trim().toLowerCase();
+
+    if (!itemToRemove) {
+      sendMsg('invalidRemoveItemUsage', $user.username);
+    } else {
+      let menu = [];
+
+      try {
+        menu = JSON.parse($kv.get('tipMenu') || '[]');
+        if (!Array.isArray(menu)) throw new Error();
+      } catch (e) {
+        menu = [];
+      }
+
+      const index = menu.findIndex(entry => entry.item.trim().toLowerCase() === itemToRemove);
+
+      if (index === -1) {
+        sendMsg('removeItemNotFound', $user.username, itemToRemove);
+      } else {
+        const removed = menu.splice(index, 1)[0];
+        $kv.set('tipMenu', JSON.stringify(menu));
+        sendMsg('removeItemSuccess', $user.username, removed.item);
+      }
+    }
+  }
+}
+
+// Show Menu Command
+if ($message.body.includes('/menu')) {
+  if ($settings.tip_menu === true) {
+    sendMsg('tipMenuTitle');
+    let menu = [];
+
+    try {
+      menu = JSON.parse($kv.get('tipMenu') || '[]');
+    } catch (e) {
+      menu = [];
+    }
+
+    if (!Array.isArray(menu) || menu.length === 0) {
+      sendMsg('emptyTipMenu');
+    } else {
+      let menuText = "";
+      for (let entry of menu) {
+        menuText += `🔹 ${entry.item} → ${entry.price} tokens\n`;
+      }
+
+      $room.sendNotice(menuText.trim(), {
+        color: $settings.tipMenu_textColor,
+        bgColor: $settings.tipMenu_bgColor,
+      });
+    }
+
+  } else if ($user.isMod || $user.username === $room.owner) {
+    sendMsg('tipMenuDisabled', $user.username);
+  }
+}
+
+
+
+// Clear Tip Menu command
+if ($message.body.includes('/clearmenu') && ($user.isMod || $user.username === $room.owner)) {
+  if ($settings.tip_menu === true) {
+    try {
+      $kv.set('tipMenu', JSON.stringify([]));
+      sendMsg('clearTipMenuSuccess', $user.username);
+     
+    } catch (e) {
+      sendMsg('clearTipMenuError', $user.username);
+    }
+  }
+}
+
+
+
+
 // 📊 Show Session Leaderboard
-if (msg === '/leader') {
+if ($message.body.includes('/leader')) {
+  sendMsg('leaderTitle');
   let sessionTippers = [];
 
   try {
@@ -14,7 +138,7 @@ if (msg === '/leader') {
 
   sessionTippers.sort((a, b) => b.tokens - a.tokens);
 
-  let leaderboardText = "📊 * This Session *\n----- Top 5 ------\n";
+  let leaderboardText = "----- Top 5 ------\n";
 
   for (let i = 0; i < 5; i++) {
     if (sessionTippers[i]) {
@@ -24,11 +148,15 @@ if (msg === '/leader') {
     }
   }
 
-  $room.sendNotice(leaderboardText.trim());
+  $room.sendNotice(leaderboardText.trim(), {
+      color: `${LEADER_TXT}`,
+      bgColor: `${LEADER_BG}`,
+  });
 }
 
 // 🏆 Show All-Time Leaderboard
-if (msg === '/alltime') {
+if ($message.body.includes('/alltime')) {
+  sendMsg('leaderTitleAllTime')
   let allTimeTippers = [];
 
   try {
@@ -39,7 +167,7 @@ if (msg === '/alltime') {
 
   allTimeTippers.sort((a, b) => b.tokens - a.tokens);
 
-  let leaderboardText = "📊 * All-Time *\n----- Top 5 ------\n";
+  let leaderboardText = "------ Top 5 ------\n";
 
   for (let i = 0; i < 5; i++) {
     if (allTimeTippers[i]) {
@@ -49,13 +177,18 @@ if (msg === '/alltime') {
     }
   }
 
-  $room.sendNotice(leaderboardText.trim());
+    $room.sendNotice(leaderboardText.trim(), {
+      color: `${LEADER_TXT}`,
+      bgColor: `${LEADER_BG}`,
+  });
 }
 
 
-if ($message.body.startsWith('/setalltime') && ($user.isMod || $user.username === $room.owner)) {
+if ($message.body.includes('/setalltime') && ($user.isMod || $user.username === $room.owner)) {
   const parts = $message.body.split(' ');
 
+   if (!$kv.get('panelLocked')) {
+  
   if (parts.length !== 3) {
     // ❗ Wrong format
     sendMsg('setAllTimeFormatError', $user.username);
@@ -89,23 +222,32 @@ if ($message.body.startsWith('/setalltime') && ($user.isMod || $user.username ==
 
       $kv.set('AllTime_Tippers', JSON.stringify(allTimeTippers));
 
-      if (allTimeTippers.length > 0) {
-        const topUser = allTimeTippers[0];
-        $kv.set('currentAllTime', `${topUser.username} - ${topUser.tokens} tokens`);
-      } else {
-        $kv.set('currentAllTime', 'None - 0 tokens');
-      }
+     if (allTimeTippers.length > 0) {
+  const topUser = allTimeTippers[0];
+  $kv.set('currentAllTime', topUser.username);
+  $kv.set('currentAllTimeTotal', topUser.tokens);
 
-      setDefaultPanel();
-      $room.reloadPanel();
+} else {
+  $kv.set('currentAllTime', 'None - 0 tokens');
+}
+
+// ✅ Always refresh the panel once, after all keys are set
+setDefaultPanel();
+$room.reloadPanel();
 
       sendMsg('setAllTimeSuccess', $user.username, targetUsername, targetTokens);
+      }
     }
+  }else {
+    sendMsg('clearAllTimeInvalid');
   }
 }
 
 // 🧹 /clearalltime command 
-if ($message.body.startsWith('/clearalltime') && ($user.isMod || $user.username === $room.owner)) {
+if ($message.body.includes('/clearalltime') && ($user.isMod || $user.username === $room.owner)) {
+  
+  if (!$kv.get('panelLocked')) {
+
   try {
     $kv.set('AllTime_Tippers', JSON.stringify([])); // Clear the full all-time leaderboard
   } catch (e) {
@@ -123,7 +265,10 @@ if ($message.body.startsWith('/clearalltime') && ($user.isMod || $user.username 
   $room.reloadPanel(); // Push live to viewers
 
   sendMsg('clearAllTimeSuccess', $user.username); // ✅ Confirmation message
+}else {
+  sendMsg('clearAllTimeInvalid', $user.username);
 }
+ }
 
 
 // ♻️  RESET APP COMMAND
