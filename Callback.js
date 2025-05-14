@@ -1,3 +1,43 @@
+if ($callback.label === 'tipMenuAnnc') {
+    if ($settings.tip_menu === true) {
+    sendMsg('tipMenuTitle');
+    let menu = [];
+
+    try {
+      menu = JSON.parse($kv.get('tipMenu') || '[]');
+    } catch (e) {
+      menu = [];
+    }
+
+    if (!Array.isArray(menu) || menu.length === 0) {
+      sendMsg('emptyTipMenu');
+    } else {
+      let menuText = "";
+      for (let entry of menu) {
+        menuText += `🔹 ${entry.item} → ${entry.price} tokens\n`;
+      }
+
+      $room.sendNotice(menuText.trim(), {
+        color: $settings.tipMenu_textColor,
+        bgColor: $settings.tipMenu_bgColor,
+      });
+    }
+
+  } 
+}
+
+
+if ($callback.label === 'timerTick') {
+  updateTimerPanel();
+  $room.reloadPanel();
+}
+
+//--------------------------------------------
+if ($callback.label === 'AnnouncegoalPrize') {
+    sendMsg('goalPrize');
+}
+
+//-------------------------------------------
 // Temporary storage for crowning
 let crownCandidateUsername = '';
 let crownCandidateTokens = 0;
@@ -12,6 +52,9 @@ if ($callback.label === 'suspenseAnimation') {
 
 
 //-----------------------------------------------
+if ($callback.label === 'sessionLead') {
+  postAlternatingLeader();
+}
 
 if ($callback.label === 'introDaddyPrompt') {
   sendMsg('tipToBecomeDaddy');
@@ -35,6 +78,15 @@ if ($callback.label === 'introDaddyPrompt') {
     $callback.cancel('repeatDaddyAnnounce');
     $callback.create('repeatDaddyAnnounce', 60 * TIME_VAR, true );
     
+   if (isGoalComplete()) {
+   if (PRIZE_ON) {
+        const winner = getCurrentDaddy();
+        const prize = PRIZE_LABEL;
+        sendMsg('prizeWon', winner, prize); // 💝 Private message
+        $callback.cancel('AnnouncegoalPrize');
+        }
+}
+
     
   }
 
@@ -69,7 +121,15 @@ else if ($callback.label === 'revealNewDaddy') {
    $kv.set('sessionDaddyTotal', crowningTokens) // Set current Daddys Total in panel.
    sendMsg('isDaddy', crowningUsername, crowningTokens); // Announce them Daddy in Chat !
    
-   
+   if (isGoalComplete()) {
+ if (PRIZE_ON) {
+        const winner = getCurrentDaddy();
+        const prize = PRIZE_LABEL;
+        sendMsg('prizeWon', winner, prize); // 💝 Private message
+        $callback.cancel('AnnouncegoalPrize');
+      }
+}
+
 
   
   }
